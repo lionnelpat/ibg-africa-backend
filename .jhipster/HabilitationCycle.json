@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000759"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Périmètre fonctionnel d'un utilisateur. L'authentification reste dans\\nKeycloak ; seul le périmètre métier est stocké ici.\\ncentre et cycle nuls = portée globale.",
+  "fields": [
+    {
+      "fieldName": "keycloakUserId",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "roleFonctionnel",
+      "fieldType": "RoleFonctionnel",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ADMIN,SCOLARITE,ENSEIGNANT,LECTEUR,ETUDIANT"
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "name": "HabilitationCycle",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "code",
+      "otherEntityName": "centreFormation",
+      "otherEntityRelationshipName": "habilitation",
+      "relationshipName": "centre",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "annee",
+      "otherEntityName": "cycle",
+      "otherEntityRelationshipName": "habilitation",
+      "relationshipName": "cycle",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,214 @@
+<div>
+  <h2 id="page-heading" data-cy="EvaluationRealiseeHeading">
+    <span jhiTranslate="forbidecBackendApp.evaluationRealisee.home.title">EvaluationRealisees</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.evaluationRealisee.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-evaluation-realisee"
+        [routerLink]="['/evaluation-realisee/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.evaluationRealisee.home.createLabel">Créer un nouveau Evaluation Realisee</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (evaluationRealisees().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.evaluationRealisee.home.notFound">Aucun Evaluation Realisee trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="note">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.note">Note</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statut">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.statut">Statut</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="compteDansMoyenne">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.compteDansMoyenne">Compte Dans Moyenne</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateDebut">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.dateDebut">Date Debut</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateFin">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.dateFin">Date Fin</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire1">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.commentaire1">Commentaire 1</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire2">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.commentaire2">Commentaire 2</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire3">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.commentaire3">Commentaire 3</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="saisiePar">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.saisiePar">Saisie Par</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="saisieLe">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.saisieLe">Saisie Le</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="valideePar">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.valideePar">Validee Par</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="valideeLe">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.valideeLe">Validee Le</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="evaluationPrevue.intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.evaluationPrevue">Evaluation Prevue</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="etudiant.nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationRealisee.etudiant">Etudiant</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (evaluationRealisee of evaluationRealisees(); track trackId(evaluationRealisee)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/evaluation-realisee', evaluationRealisee.id, 'view']">{{ evaluationRealisee.id }}</a>
+              </td>
+              <td>{{ evaluationRealisee.note }}</td>
+              <td [jhiTranslate]="'forbidecBackendApp.StatutNote.' + (evaluationRealisee.statut ?? 'null')">
+                {{
+                  { null: '', NON_SAISIE: 'NON_SAISIE', SAISIE: 'SAISIE', ABSENT: 'ABSENT', DISPENSE: 'DISPENSE', VALIDEE: 'VALIDEE' }[
+                    evaluationRealisee.statut ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ evaluationRealisee.compteDansMoyenne }}</td>
+              <td>{{ evaluationRealisee.dateDebut | formatMediumDate }}</td>
+              <td>{{ evaluationRealisee.dateFin | formatMediumDate }}</td>
+              <td>{{ evaluationRealisee.commentaire1 }}</td>
+              <td>{{ evaluationRealisee.commentaire2 }}</td>
+              <td>{{ evaluationRealisee.commentaire3 }}</td>
+              <td>{{ evaluationRealisee.saisiePar }}</td>
+              <td>{{ evaluationRealisee.saisieLe | formatMediumDatetime }}</td>
+              <td>{{ evaluationRealisee.valideePar }}</td>
+              <td>{{ evaluationRealisee.valideeLe | formatMediumDatetime }}</td>
+              <td>
+                @if (evaluationRealisee.evaluationPrevue) {
+                  <div>
+                    <a [routerLink]="['/evaluation-prevue', evaluationRealisee.evaluationPrevue.id, 'view']">{{
+                      evaluationRealisee.evaluationPrevue.intitule
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (evaluationRealisee.etudiant) {
+                  <div>
+                    <a [routerLink]="['/etudiant', evaluationRealisee.etudiant.id, 'view']">{{ evaluationRealisee.etudiant.nom }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/evaluation-realisee', evaluationRealisee.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/evaluation-realisee', evaluationRealisee.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(evaluationRealisee)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

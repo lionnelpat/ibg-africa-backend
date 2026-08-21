@@ -1,0 +1,12 @@
+{
+  "forbidecBackendApp": {
+    "RoleFonctionnel": {
+      "null": "",
+      "ADMIN": "ADMIN",
+      "SCOLARITE": "SCOLARITE",
+      "ENSEIGNANT": "ENSEIGNANT",
+      "LECTEUR": "LECTEUR",
+      "ETUDIANT": "ETUDIANT"
+    }
+  }
+}

@@ -1,0 +1,383 @@
+/**
+ * ====================================================================
+ * GestResu — JDL JHipster 8.x
+ * ====================================================================
+ *
+ * Modèle établi à partir de :
+ *   - la base Access GestResu_Senegal_Ete_2025 (14 tables, 44 requêtes)
+ *   - les données réellement migrées (29 cycles, 547 étudiants,
+ *     1 561 inscriptions, 117 évaluations, 6 122 notes, 1996-2026)
+ *   - le bulletin de référence, recalculé à l'identique (17,83 / TB)
+ *
+ * Trois écarts assumés par rapport au modèle Access :
+ *
+ *   1. Matiere / SousMatiere / Cours restent INDÉPENDANTES.
+ *      Les données invalident la hiérarchie : « Vie chrétienne » existe
+ *      sous Pratique, Biblique ET Systématique selon le cycle.
+ *      Le triplet est porté par l'évaluation.
+ *
+ *   2. La note devient NULLABLE, complétée par un statut explicite.
+ *      Access stockait NOT NULL DEFAULT 0 : une copie non corrigée et
+ *      un vrai zéro étaient indiscernables (108 cas dans la base).
+ *
+ *   3. IdCycleLie est supprimé : 0 utilisation sur 1 561 inscriptions.
+ *      Le parcours d'un étudiant se lit par ses inscriptions successives.
+ *
+ * Génération :  jhipster jdl gestresu.jdl
+ * ====================================================================
+ */
+
+application {
+  config {
+    baseName forbidec_backend
+    applicationType monolith
+    packageName org.forbidec
+    authenticationType oauth2
+    prodDatabaseType mysql
+    devDatabaseType mysql
+    cacheProvider ehcache
+    enableHibernateCache true
+    buildTool maven
+    clientFramework angular
+    languages [fr, en]
+    nativeLanguage fr
+    enableTranslation true
+    testFrameworks [cypress]
+    serverPort 8080
+  }
+  entities *
+}
+
+
+/* ====================================================================
+ * IMPLANTATION
+ * ==================================================================== */
+
+/** Pays d'implantation d'un ou plusieurs centres de formation. */
+entity Pays {
+  codeIso  String  required unique minlength(2) maxlength(2)
+  nom      String  required unique maxlength(100)
+  langue   String  required maxlength(5)
+  fuseau   String  maxlength(50)
+  actif    Boolean required
+}
+
+/**
+ * Centre de formation. Porte les blocs d'impression du bulletin
+ * (en-tête, ville de signature, signataire) et les règles pédagogiques
+ * locales : nombre de cycles du cursus, note maximale.
+ */
+entity CentreFormation {
+  code            String   required unique maxlength(20)
+  nom             String   required maxlength(150)
+  ville           String   required maxlength(100)
+  adresse         String   maxlength(255)
+  enteteDocument  TextBlob
+  signataire      String   required maxlength(100)
+  logoUrl         String   maxlength(255)
+  nbCyclesCursus  Integer  required min(1) max(20)
+  noteMaximale    BigDecimal required min(1)
+  actif           Boolean  required
+}
+
+
+/* ====================================================================
+ * RÉFÉRENTIELS PÉDAGOGIQUES
+ *
+ * Les trois entités ci-dessous ne sont volontairement PAS liées entre
+ * elles : leur combinaison n'a de sens qu'au niveau de l'évaluation.
+ * ==================================================================== */
+
+entity Matiere {
+  intitule     String  required unique maxlength(100)
+  libelleLong  String  maxlength(100)
+  libelleCourt String  maxlength(50)
+  commentaire  String  maxlength(255)
+  actif        Boolean required
+}
+
+entity SousMatiere {
+  intitule     String  required unique maxlength(100)
+  libelleLong  String  maxlength(100)
+  libelleCourt String  maxlength(50)
+  commentaire  String  maxlength(255)
+  actif        Boolean required
+}
+
+/** Unité d'enseignement. Le coefficient porté ici sert de valeur par défaut. */
+entity Cours {
+  intitule       String  required unique maxlength(150)
+  libelleLong    String  maxlength(150)
+  libelleCourt   String  maxlength(60)
+  ordreAffichage Integer required
+  nbPeriodes     Integer min(0)
+  coefficient    BigDecimal required min(0)
+  dateDebut      LocalDate
+  dateFin        LocalDate
+  commentaire    String  maxlength(255)
+  actif          Boolean required
+}
+
+/**
+ * Type d'évaluation. Le code technique évite de dépendre du libellé :
+ * les requêtes Access filtraient sur la chaîne « Académique ».
+ */
+entity TypeTache {
+  code             String  required unique maxlength(30)
+  intitule         String  required unique maxlength(100)
+  libelleLong      String  maxlength(100)
+  libelleCourt     String  maxlength(50)
+  entreDansMoyenne Boolean required
+  commentaire      String  maxlength(255)
+  actif            Boolean required
+}
+
+/**
+ * Barème des mentions. Reconstitué depuis le pied de page du bulletin :
+ *   [19-20] Excellent · [17-19[ Très-Bien · [15-17[ Bien
+ *   [12-15[ Assez-Bien · [10-12[ Suffisant · <10 Insuffisant
+ * Rattaché à un centre si celui-ci applique un barème propre ;
+ * sans rattachement, le barème est commun à tous les centres.
+ */
+entity BaremeMention {
+  libelleLong    String  required maxlength(100)
+  libelleCourt   String  required maxlength(50)
+  borneMin       BigDecimal min(0)
+  minInclus      Boolean required
+  borneMax       BigDecimal min(0)
+  maxInclus      Boolean required
+  ordreAffichage Integer required
+  commentaire    String  maxlength(255)
+  actif          Boolean required
+}
+
+
+/* ====================================================================
+ * ACTEURS
+ * ==================================================================== */
+
+entity Enseignant {
+  nom            String  required maxlength(80)
+  prenom         String  required maxlength(80)
+  libelleLong    String  maxlength(100)
+  libelleCourt   String  maxlength(50)
+  email          String  unique maxlength(150)
+  telephone      String  maxlength(30)
+  keycloakUserId String  unique maxlength(64)
+  commentaire    String  maxlength(255)
+  actif          Boolean required
+}
+
+/**
+ * Étudiant.
+ * matricule remplace le triplet (nom, prénom, particularité) comme clé
+ * métier : la base contient 5 homonymes stricts.
+ * anneeEntree et cursusAcheve sont dérivés de champs texte Access
+ * (« Se - 2014 », « Finaliste en 2022 » — 165 étudiants concernés).
+ */
+entity Etudiant {
+  matricule      String   unique maxlength(30)
+  nom            String   required maxlength(80)
+  prenom         String   required maxlength(80)
+  particularite  String   maxlength(80)
+  dateNaissance  LocalDate
+  email          String   maxlength(150)
+  telephone      String   maxlength(30)
+  anneeEntree    Integer  min(1900) max(2200)
+  cursusAcheve   Boolean  required
+  anneeFinale    Integer  min(1900) max(2200)
+  keycloakUserId String   unique maxlength(64)
+  commentaire    String   maxlength(255)
+  actif          Boolean  required
+}
+
+
+/* ====================================================================
+ * CYCLES ET INSCRIPTIONS
+ * ==================================================================== */
+
+/** Promotion annuelle d'un centre. cloture verrouille toute saisie. */
+entity Cycle {
+  annee       Integer  required min(1900) max(2200)
+  libelle     String   maxlength(100)
+  dateDebut   LocalDate
+  dateFin     LocalDate
+  cloture     Boolean  required
+  commentaire String   maxlength(255)
+}
+
+/**
+ * Inscription d'un étudiant à un cycle.
+ * commentaire1/2/3/5 sont conservés à l'identique le temps que leur
+ * usage réel soit élucidé ; ils sont quasi vides dans la base migrée.
+ */
+entity InscriptionCycle {
+  dateInscription LocalDate
+  cycleTermine    Boolean required
+  groupe          String  maxlength(100)
+  commentaire1    String  maxlength(255)
+  commentaire2    String  maxlength(255)
+  commentaire3    String  maxlength(255)
+  commentaire5    String  maxlength(255)
+}
+
+entity EvenementEtudiant {
+  dateEvenement LocalDate
+  intitule      String required maxlength(150)
+  commentaire   String maxlength(255)
+}
+
+
+/* ====================================================================
+ * ÉVALUATIONS
+ * ==================================================================== */
+
+/** Évaluation planifiée pour un cycle : le « quoi » et le « par qui ». */
+entity EvaluationPrevue {
+  intitule          String  required maxlength(150)
+  libelleImpression String  required maxlength(150)
+  coefficient       BigDecimal required min(0)
+  compteDansMoyenne Boolean required
+  noteMaximale      BigDecimal required min(1)
+  dateDebut         LocalDate
+  dateFin           LocalDate
+  commentaire       String  maxlength(255)
+}
+
+enum StatutNote {
+  NON_SAISIE, SAISIE, ABSENT, DISPENSE, VALIDEE
+}
+
+/**
+ * Note d'un étudiant sur une évaluation.
+ * note nullable + statut : NON_SAISIE et une note de 0 sont enfin
+ * deux choses différentes.
+ */
+entity EvaluationRealisee {
+  note              BigDecimal min(0)
+  statut            StatutNote required
+  compteDansMoyenne Boolean required
+  dateDebut         LocalDate
+  dateFin           LocalDate
+  commentaire1      String  maxlength(255)
+  commentaire2      String  maxlength(255)
+  commentaire3      String  maxlength(255)
+  saisiePar         String  maxlength(64)
+  saisieLe          Instant
+  valideePar        String  maxlength(64)
+  valideeLe         Instant
+}
+
+/** Journal des modifications de note. Absent d'Access, requis en multi-utilisateur. */
+entity HistoriqueNote {
+  noteAvant    BigDecimal
+  noteApres    BigDecimal
+  statutAvant  StatutNote
+  statutApres  StatutNote
+  motif        String  maxlength(255)
+  modifiePar   String  required maxlength(64)
+  modifieLe    Instant required
+}
+
+
+/* ====================================================================
+ * PARAMÉTRAGE ET HABILITATIONS
+ * ==================================================================== */
+
+enum TypeValeur { TEXTE, NOMBRE, DATE, BOOLEEN }
+
+/** Remplace tVariables. Sans centre rattaché, le paramètre est global. */
+entity Parametre {
+  cle          String  required unique maxlength(80)
+  libelle      String  maxlength(255)
+  valeur       String  maxlength(500)
+  typeValeur   TypeValeur required
+  modifiableUi Boolean required
+}
+
+enum RoleFonctionnel { ADMIN, SCOLARITE, ENSEIGNANT, LECTEUR, ETUDIANT }
+
+/**
+ * Périmètre fonctionnel d'un utilisateur. L'authentification reste dans
+ * Keycloak ; seul le périmètre métier est stocké ici.
+ * centre et cycle nuls = portée globale.
+ */
+entity HabilitationCycle {
+  keycloakUserId  String required maxlength(64)
+  roleFonctionnel RoleFonctionnel required
+  dateDebut       LocalDate
+  dateFin         LocalDate
+}
+
+
+/* ====================================================================
+ * RELATIONS
+ * ==================================================================== */
+
+relationship ManyToOne {
+  CentreFormation{pays(nom) required}          to Pays{centre}
+
+  BaremeMention{centre(code)}                  to CentreFormation{bareme}
+  Parametre{centre(code)}                      to CentreFormation{parametre}
+
+  Etudiant{pays(nom)}                          to Pays{etudiant}
+
+  Cycle{centre(code) required}                 to CentreFormation{cycle}
+
+  InscriptionCycle{cycle(annee) required}      to Cycle{inscription}
+  InscriptionCycle{etudiant(nom) required}     to Etudiant{inscription}
+
+  EvenementEtudiant{etudiant(nom) required}    to Etudiant{evenement}
+
+  EvaluationPrevue{cycle(annee) required}         to Cycle{evaluation}
+  EvaluationPrevue{enseignant(nom) required}      to Enseignant{evaluation}
+  EvaluationPrevue{matiere(intitule) required}    to Matiere{evaluation}
+  EvaluationPrevue{sousMatiere(intitule) required} to SousMatiere{evaluation}
+  EvaluationPrevue{cours(intitule) required}      to Cours{evaluation}
+  EvaluationPrevue{typeTache(intitule) required}  to TypeTache{evaluation}
+
+  EvaluationRealisee{evaluationPrevue(intitule) required} to EvaluationPrevue{note}
+  EvaluationRealisee{etudiant(nom) required}              to Etudiant{note}
+
+  HistoriqueNote{evaluationRealisee(statut) required} to EvaluationRealisee{historique}
+
+  HabilitationCycle{centre(code)}              to CentreFormation{habilitation}
+  HabilitationCycle{cycle(annee)}              to Cycle{habilitation}
+}
+
+
+/* ====================================================================
+ * OPTIONS DE GÉNÉRATION
+ * ==================================================================== */
+
+/* Pagination : seules les tables volumineuses en ont besoin.
+   evaluation_realisee dépasse 6 000 lignes dès la reprise. */
+paginate EvaluationRealisee, EvaluationPrevue, Etudiant,
+         InscriptionCycle, HistoriqueNote with infinite-scroll
+paginate Cours, SousMatiere, EvenementEtudiant, Cycle,
+         Enseignant, HabilitationCycle with pagination
+
+/* DTO + service pour tout ce qui porte de la logique métier */
+dto EvaluationPrevue, EvaluationRealisee, InscriptionCycle, Etudiant,
+    Cycle, CentreFormation, BaremeMention, HistoriqueNote with mapstruct
+
+service EvaluationPrevue, EvaluationRealisee, InscriptionCycle, Etudiant,
+        Cycle, CentreFormation, BaremeMention, HistoriqueNote with serviceClass
+
+/* CRUD direct suffisant pour les référentiels */
+service Pays, Matiere, SousMatiere, Cours, TypeTache,
+        Parametre, EvenementEtudiant, Enseignant, HabilitationCycle with serviceClass
+
+/* Pays, Matiere, SousMatiere, Cours, Enseignant et TypeTache sont ciblés par une
+ * relation ManyToOne depuis une entité DTO (CentreFormation, Etudiant, EvaluationPrevue) :
+ * MapStruct exige un DTO sur la cible pour générer le mapper, sinon le build échoue
+ * (ex. "cannot find symbol: class EnseignantDTO"). Ça n'ajoute qu'un DTO, pas de service
+ * métier : ils restent en CRUD direct via serviceClass ci-dessus. */
+dto Pays, Matiere, SousMatiere, Cours, TypeTache, Enseignant with mapstruct
+
+/* Filtrage côté serveur : indispensable sur les écrans de recherche */
+filter Etudiant, EvaluationRealisee, EvaluationPrevue, InscriptionCycle,
+       Cycle, Enseignant, Cours, HistoriqueNote
+
+/* Le journal ne se modifie jamais depuis l'interface */
+readOnly HistoriqueNote

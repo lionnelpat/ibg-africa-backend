@@ -1,0 +1,116 @@
+<div>
+  <h2 id="page-heading" data-cy="MatiereHeading">
+    <span jhiTranslate="forbidecBackendApp.matiere.home.title">Matieres</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.matiere.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-matiere"
+        [routerLink]="['/matiere/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.matiere.home.createLabel">Créer un nouveau Matiere</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (matieres().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.matiere.home.notFound">Aucun Matiere trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.matiere.intitule">Intitule</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="libelleLong">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.matiere.libelleLong">Libelle Long</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="libelleCourt">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.matiere.libelleCourt">Libelle Court</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.matiere.commentaire">Commentaire</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="actif">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.matiere.actif">Actif</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (matiere of matieres(); track trackId(matiere)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/matiere', matiere.id, 'view']">{{ matiere.id }}</a>
+              </td>
+              <td>{{ matiere.intitule }}</td>
+              <td>{{ matiere.libelleLong }}</td>
+              <td>{{ matiere.libelleCourt }}</td>
+              <td>{{ matiere.commentaire }}</td>
+              <td>{{ matiere.actif }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/matiere', matiere.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/matiere', matiere.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(matiere)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

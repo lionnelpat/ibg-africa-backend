@@ -1,0 +1,228 @@
+<div>
+  <h2 id="page-heading" data-cy="EvaluationPrevueHeading">
+    <span jhiTranslate="forbidecBackendApp.evaluationPrevue.home.title">EvaluationPrevues</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.evaluationPrevue.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-evaluation-prevue"
+        [routerLink]="['/evaluation-prevue/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.evaluationPrevue.home.createLabel">Créer un nouveau Evaluation Prevue</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (evaluationPrevues().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.evaluationPrevue.home.notFound">Aucun Evaluation Prevue trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.intitule">Intitule</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="libelleImpression">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.libelleImpression">Libelle Impression</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="coefficient">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.coefficient">Coefficient</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="compteDansMoyenne">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.compteDansMoyenne">Compte Dans Moyenne</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="noteMaximale">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.noteMaximale">Note Maximale</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateDebut">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.dateDebut">Date Debut</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateFin">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.dateFin">Date Fin</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.commentaire">Commentaire</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cycle.annee">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.cycle">Cycle</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="enseignant.nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.enseignant">Enseignant</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="matiere.intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.matiere">Matiere</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sousMatiere.intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.sousMatiere">Sous Matiere</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cours.intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.cours">Cours</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="typeTache.intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evaluationPrevue.typeTache">Type Tache</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (evaluationPrevue of evaluationPrevues(); track trackId(evaluationPrevue)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/evaluation-prevue', evaluationPrevue.id, 'view']">{{ evaluationPrevue.id }}</a>
+              </td>
+              <td>{{ evaluationPrevue.intitule }}</td>
+              <td>{{ evaluationPrevue.libelleImpression }}</td>
+              <td>{{ evaluationPrevue.coefficient }}</td>
+              <td>{{ evaluationPrevue.compteDansMoyenne }}</td>
+              <td>{{ evaluationPrevue.noteMaximale }}</td>
+              <td>{{ evaluationPrevue.dateDebut | formatMediumDate }}</td>
+              <td>{{ evaluationPrevue.dateFin | formatMediumDate }}</td>
+              <td>{{ evaluationPrevue.commentaire }}</td>
+              <td>
+                @if (evaluationPrevue.cycle) {
+                  <div>
+                    <a [routerLink]="['/cycle', evaluationPrevue.cycle.id, 'view']">{{ evaluationPrevue.cycle.annee }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (evaluationPrevue.enseignant) {
+                  <div>
+                    <a [routerLink]="['/enseignant', evaluationPrevue.enseignant.id, 'view']">{{ evaluationPrevue.enseignant.nom }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (evaluationPrevue.matiere) {
+                  <div>
+                    <a [routerLink]="['/matiere', evaluationPrevue.matiere.id, 'view']">{{ evaluationPrevue.matiere.intitule }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (evaluationPrevue.sousMatiere) {
+                  <div>
+                    <a [routerLink]="['/sous-matiere', evaluationPrevue.sousMatiere.id, 'view']">{{
+                      evaluationPrevue.sousMatiere.intitule
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (evaluationPrevue.cours) {
+                  <div>
+                    <a [routerLink]="['/cours', evaluationPrevue.cours.id, 'view']">{{ evaluationPrevue.cours.intitule }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (evaluationPrevue.typeTache) {
+                  <div>
+                    <a [routerLink]="['/type-tache', evaluationPrevue.typeTache.id, 'view']">{{ evaluationPrevue.typeTache.intitule }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/evaluation-prevue', evaluationPrevue.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/evaluation-prevue', evaluationPrevue.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(evaluationPrevue)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

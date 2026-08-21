@@ -1,0 +1,102 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (evaluationRealisee(); as evaluationRealiseeRef) {
+      <div>
+        <h2 data-cy="evaluationRealiseeDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.evaluationRealisee.detail.title">Evaluation Realisee</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.note">Note</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.note }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.statut">Statut</span></dt>
+          <dd>
+            <span [jhiTranslate]="'forbidecBackendApp.StatutNote.' + (evaluationRealiseeRef.statut ?? 'null')">{{
+              { null: '', NON_SAISIE: 'NON_SAISIE', SAISIE: 'SAISIE', ABSENT: 'ABSENT', DISPENSE: 'DISPENSE', VALIDEE: 'VALIDEE' }[
+                evaluationRealiseeRef.statut ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.compteDansMoyenne">Compte Dans Moyenne</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.compteDansMoyenne }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.dateDebut">Date Debut</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.dateDebut | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.dateFin">Date Fin</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.dateFin | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.commentaire1">Commentaire 1</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.commentaire1 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.commentaire2">Commentaire 2</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.commentaire2 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.commentaire3">Commentaire 3</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.commentaire3 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.saisiePar">Saisie Par</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.saisiePar }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.saisieLe">Saisie Le</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.saisieLe | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.valideePar">Validee Par</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.valideePar }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.valideeLe">Validee Le</span></dt>
+          <dd>
+            <span>{{ evaluationRealiseeRef.valideeLe | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.evaluationPrevue">Evaluation Prevue</span></dt>
+          <dd>
+            @if (evaluationRealisee()!.evaluationPrevue) {
+              <div>
+                <a [routerLink]="['/evaluation-prevue', evaluationRealisee()!.evaluationPrevue?.id, 'view']">{{
+                  evaluationRealiseeRef.evaluationPrevue?.intitule
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationRealisee.etudiant">Etudiant</span></dt>
+          <dd>
+            @if (evaluationRealisee()!.etudiant) {
+              <div>
+                <a [routerLink]="['/etudiant', evaluationRealisee()!.etudiant?.id, 'view']">{{ evaluationRealiseeRef.etudiant?.nom }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/evaluation-realisee', evaluationRealiseeRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

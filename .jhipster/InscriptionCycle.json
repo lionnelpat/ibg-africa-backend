@@ -1,0 +1,74 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000159"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Inscription d'un étudiant à un cycle.\\ncommentaire1/2/3/5 sont conservés à l'identique le temps que leur\\nusage réel soit élucidé ; ils sont quasi vides dans la base migrée.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "dateInscription",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "cycleTermine",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "groupe",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "commentaire1",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "commentaire2",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "commentaire3",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "commentaire5",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "InscriptionCycle",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityField": "annee",
+      "otherEntityName": "cycle",
+      "otherEntityRelationshipName": "inscription",
+      "relationshipName": "cycle",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "inscription",
+      "relationshipName": "etudiant",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

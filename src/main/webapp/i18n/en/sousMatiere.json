@@ -1,0 +1,29 @@
+{
+  "forbidecBackendApp": {
+    "sousMatiere": {
+      "home": {
+        "title": "Sous Matieres",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sous Matiere",
+        "createOrEditLabel": "Create or edit a Sous Matiere",
+        "notFound": "No Sous Matieres found"
+      },
+      "created": "A new Sous Matiere is created with identifier {{ param }}",
+      "updated": "A Sous Matiere is updated with identifier {{ param }}",
+      "deleted": "A Sous Matiere is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sous Matiere {{ id }}?"
+      },
+      "detail": {
+        "title": "Sous Matiere"
+      },
+      "id": "ID",
+      "intitule": "Intitule",
+      "libelleLong": "Libelle Long",
+      "libelleCourt": "Libelle Court",
+      "commentaire": "Commentaire",
+      "actif": "Actif",
+      "evaluation": "Evaluation"
+    }
+  }
+}

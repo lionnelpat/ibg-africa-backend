@@ -1,0 +1,23 @@
+{
+  "forbidecBackendApp": {
+    "historiqueNote": {
+      "home": {
+        "title": "Historique Notes",
+        "refreshListLabel": "Refresh list",
+        "notFound": "No Historique Notes found"
+      },
+      "detail": {
+        "title": "Historique Note"
+      },
+      "id": "ID",
+      "noteAvant": "Note Avant",
+      "noteApres": "Note Apres",
+      "statutAvant": "Statut Avant",
+      "statutApres": "Statut Apres",
+      "motif": "Motif",
+      "modifiePar": "Modifie Par",
+      "modifieLe": "Modifie Le",
+      "evaluationRealisee": "Evaluation Realisee"
+    }
+  }
+}

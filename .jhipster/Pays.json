@@ -1,0 +1,59 @@
+{
+  "annotations": {
+    "changelogDate": "20260820235159"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Pays d'implantation d'un ou plusieurs centres de formation.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "codeIso",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "2",
+      "fieldValidateRulesMinlength": "2"
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "langue",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "5"
+    },
+    {
+      "fieldName": "fuseau",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "50"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Pays",
+  "relationships": [
+    {
+      "otherEntityName": "centreFormation",
+      "otherEntityRelationshipName": "pays",
+      "relationshipName": "centre",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "pays",
+      "relationshipName": "etudiant",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (typeTache(); as typeTacheRef) {
+      <div>
+        <h2 data-cy="typeTacheDetailsHeading"><span jhiTranslate="forbidecBackendApp.typeTache.detail.title">Type Tache</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.code">Code</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.intitule">Intitule</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.intitule }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.libelleLong">Libelle Long</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.libelleLong }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.libelleCourt">Libelle Court</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.libelleCourt }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.entreDansMoyenne">Entre Dans Moyenne</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.entreDansMoyenne }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.typeTache.actif">Actif</span></dt>
+          <dd>
+            <span>{{ typeTacheRef.actif }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/type-tache', typeTacheRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

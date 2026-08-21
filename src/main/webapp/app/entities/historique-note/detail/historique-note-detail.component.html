@@ -1,0 +1,74 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (historiqueNote(); as historiqueNoteRef) {
+      <div>
+        <h2 data-cy="historiqueNoteDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.historiqueNote.detail.title">Historique Note</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ historiqueNoteRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.noteAvant">Note Avant</span></dt>
+          <dd>
+            <span>{{ historiqueNoteRef.noteAvant }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.noteApres">Note Apres</span></dt>
+          <dd>
+            <span>{{ historiqueNoteRef.noteApres }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.statutAvant">Statut Avant</span></dt>
+          <dd>
+            <span [jhiTranslate]="'forbidecBackendApp.StatutNote.' + (historiqueNoteRef.statutAvant ?? 'null')">{{
+              { null: '', NON_SAISIE: 'NON_SAISIE', SAISIE: 'SAISIE', ABSENT: 'ABSENT', DISPENSE: 'DISPENSE', VALIDEE: 'VALIDEE' }[
+                historiqueNoteRef.statutAvant ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.statutApres">Statut Apres</span></dt>
+          <dd>
+            <span [jhiTranslate]="'forbidecBackendApp.StatutNote.' + (historiqueNoteRef.statutApres ?? 'null')">{{
+              { null: '', NON_SAISIE: 'NON_SAISIE', SAISIE: 'SAISIE', ABSENT: 'ABSENT', DISPENSE: 'DISPENSE', VALIDEE: 'VALIDEE' }[
+                historiqueNoteRef.statutApres ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.motif">Motif</span></dt>
+          <dd>
+            <span>{{ historiqueNoteRef.motif }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.modifiePar">Modifie Par</span></dt>
+          <dd>
+            <span>{{ historiqueNoteRef.modifiePar }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.modifieLe">Modifie Le</span></dt>
+          <dd>
+            <span>{{ historiqueNoteRef.modifieLe | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.historiqueNote.evaluationRealisee">Evaluation Realisee</span></dt>
+          <dd>
+            @if (historiqueNote()!.evaluationRealisee) {
+              <div>
+                <a [routerLink]="['/evaluation-realisee', historiqueNote()!.evaluationRealisee?.id, 'view']">{{
+                  historiqueNoteRef.evaluationRealisee?.statut
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

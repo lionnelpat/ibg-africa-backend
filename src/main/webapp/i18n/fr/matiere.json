@@ -1,0 +1,29 @@
+{
+  "forbidecBackendApp": {
+    "matiere": {
+      "home": {
+        "title": "Matieres",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Matiere",
+        "createOrEditLabel": "Créer ou éditer un Matiere",
+        "notFound": "Aucun Matiere trouvé"
+      },
+      "created": "Un nouveau Matiere a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Matiere avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Matiere avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Matiere {{ id }} ?"
+      },
+      "detail": {
+        "title": "Matiere"
+      },
+      "id": "ID",
+      "intitule": "Intitule",
+      "libelleLong": "Libelle Long",
+      "libelleCourt": "Libelle Court",
+      "commentaire": "Commentaire",
+      "actif": "Actif",
+      "evaluation": "Evaluation"
+    }
+  }
+}

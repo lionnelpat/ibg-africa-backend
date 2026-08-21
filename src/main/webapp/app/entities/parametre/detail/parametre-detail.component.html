@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (parametre(); as parametreRef) {
+      <div>
+        <h2 data-cy="parametreDetailsHeading"><span jhiTranslate="forbidecBackendApp.parametre.detail.title">Parametre</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ parametreRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.parametre.cle">Cle</span></dt>
+          <dd>
+            <span>{{ parametreRef.cle }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.parametre.libelle">Libelle</span></dt>
+          <dd>
+            <span>{{ parametreRef.libelle }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.parametre.valeur">Valeur</span></dt>
+          <dd>
+            <span>{{ parametreRef.valeur }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.parametre.typeValeur">Type Valeur</span></dt>
+          <dd>
+            <span [jhiTranslate]="'forbidecBackendApp.TypeValeur.' + (parametreRef.typeValeur ?? 'null')">{{
+              { null: '', TEXTE: 'TEXTE', NOMBRE: 'NOMBRE', DATE: 'DATE', BOOLEEN: 'BOOLEEN' }[parametreRef.typeValeur ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.parametre.modifiableUi">Modifiable Ui</span></dt>
+          <dd>
+            <span>{{ parametreRef.modifiableUi }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.parametre.centre">Centre</span></dt>
+          <dd>
+            @if (parametre()!.centre) {
+              <div>
+                <a [routerLink]="['/centre-formation', parametre()!.centre?.id, 'view']">{{ parametreRef.centre?.code }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/parametre', parametreRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

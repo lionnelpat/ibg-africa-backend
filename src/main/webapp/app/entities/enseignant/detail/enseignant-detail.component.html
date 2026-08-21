@@ -1,0 +1,66 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (enseignant(); as enseignantRef) {
+      <div>
+        <h2 data-cy="enseignantDetailsHeading"><span jhiTranslate="forbidecBackendApp.enseignant.detail.title">Enseignant</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ enseignantRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.nom">Nom</span></dt>
+          <dd>
+            <span>{{ enseignantRef.nom }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.prenom">Prenom</span></dt>
+          <dd>
+            <span>{{ enseignantRef.prenom }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.libelleLong">Libelle Long</span></dt>
+          <dd>
+            <span>{{ enseignantRef.libelleLong }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.libelleCourt">Libelle Court</span></dt>
+          <dd>
+            <span>{{ enseignantRef.libelleCourt }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.email">Email</span></dt>
+          <dd>
+            <span>{{ enseignantRef.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.telephone">Telephone</span></dt>
+          <dd>
+            <span>{{ enseignantRef.telephone }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.keycloakUserId">Keycloak User Id</span></dt>
+          <dd>
+            <span>{{ enseignantRef.keycloakUserId }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ enseignantRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.enseignant.actif">Actif</span></dt>
+          <dd>
+            <span>{{ enseignantRef.actif }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/enseignant', enseignantRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

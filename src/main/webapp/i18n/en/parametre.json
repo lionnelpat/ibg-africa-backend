@@ -1,0 +1,29 @@
+{
+  "forbidecBackendApp": {
+    "parametre": {
+      "home": {
+        "title": "Parametres",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Parametre",
+        "createOrEditLabel": "Create or edit a Parametre",
+        "notFound": "No Parametres found"
+      },
+      "created": "A new Parametre is created with identifier {{ param }}",
+      "updated": "A Parametre is updated with identifier {{ param }}",
+      "deleted": "A Parametre is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Parametre {{ id }}?"
+      },
+      "detail": {
+        "title": "Parametre"
+      },
+      "id": "ID",
+      "cle": "Cle",
+      "libelle": "Libelle",
+      "valeur": "Valeur",
+      "typeValeur": "Type Valeur",
+      "modifiableUi": "Modifiable Ui",
+      "centre": "Centre"
+    }
+  }
+}

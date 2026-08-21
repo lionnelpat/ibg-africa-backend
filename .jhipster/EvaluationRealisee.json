@@ -1,0 +1,105 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000459"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Note d'un étudiant sur une évaluation.\\nnote nullable + statut : NON_SAISIE et une note de 0 sont enfin\\ndeux choses différentes.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "note",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "StatutNote",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "NON_SAISIE,SAISIE,ABSENT,DISPENSE,VALIDEE"
+    },
+    {
+      "fieldName": "compteDansMoyenne",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "commentaire1",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "commentaire2",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "commentaire3",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "saisiePar",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "saisieLe",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "valideePar",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "valideeLe",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "EvaluationRealisee",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityField": "intitule",
+      "otherEntityName": "evaluationPrevue",
+      "otherEntityRelationshipName": "note",
+      "relationshipName": "evaluationPrevue",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "note",
+      "relationshipName": "etudiant",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "historiqueNote",
+      "otherEntityRelationshipName": "evaluationRealisee",
+      "relationshipName": "historique",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

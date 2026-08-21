@@ -1,0 +1,68 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (habilitationCycle(); as habilitationCycleRef) {
+      <div>
+        <h2 data-cy="habilitationCycleDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.habilitationCycle.detail.title">Habilitation Cycle</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ habilitationCycleRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.habilitationCycle.keycloakUserId">Keycloak User Id</span></dt>
+          <dd>
+            <span>{{ habilitationCycleRef.keycloakUserId }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.habilitationCycle.roleFonctionnel">Role Fonctionnel</span></dt>
+          <dd>
+            <span [jhiTranslate]="'forbidecBackendApp.RoleFonctionnel.' + (habilitationCycleRef.roleFonctionnel ?? 'null')">{{
+              { null: '', ADMIN: 'ADMIN', SCOLARITE: 'SCOLARITE', ENSEIGNANT: 'ENSEIGNANT', LECTEUR: 'LECTEUR', ETUDIANT: 'ETUDIANT' }[
+                habilitationCycleRef.roleFonctionnel ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.habilitationCycle.dateDebut">Date Debut</span></dt>
+          <dd>
+            <span>{{ habilitationCycleRef.dateDebut | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.habilitationCycle.dateFin">Date Fin</span></dt>
+          <dd>
+            <span>{{ habilitationCycleRef.dateFin | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.habilitationCycle.centre">Centre</span></dt>
+          <dd>
+            @if (habilitationCycle()!.centre) {
+              <div>
+                <a [routerLink]="['/centre-formation', habilitationCycle()!.centre?.id, 'view']">{{ habilitationCycleRef.centre?.code }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.habilitationCycle.cycle">Cycle</span></dt>
+          <dd>
+            @if (habilitationCycle()!.cycle) {
+              <div>
+                <a [routerLink]="['/cycle', habilitationCycle()!.cycle?.id, 'view']">{{ habilitationCycleRef.cycle?.annee }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/habilitation-cycle', habilitationCycleRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

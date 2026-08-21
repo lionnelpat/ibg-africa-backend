@@ -1,0 +1,143 @@
+<div>
+  <h2 id="page-heading" data-cy="HistoriqueNoteHeading">
+    <span jhiTranslate="forbidecBackendApp.historiqueNote.home.title">HistoriqueNotes</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.historiqueNote.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (historiqueNotes().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.historiqueNote.home.notFound">Aucun Historique Note trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="noteAvant">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.noteAvant">Note Avant</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="noteApres">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.noteApres">Note Apres</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statutAvant">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.statutAvant">Statut Avant</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statutApres">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.statutApres">Statut Apres</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="motif">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.motif">Motif</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifiePar">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.modifiePar">Modifie Par</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifieLe">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.modifieLe">Modifie Le</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="evaluationRealisee.statut">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.historiqueNote.evaluationRealisee">Evaluation Realisee</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (historiqueNote of historiqueNotes(); track trackId(historiqueNote)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/historique-note', historiqueNote.id, 'view']">{{ historiqueNote.id }}</a>
+              </td>
+              <td>{{ historiqueNote.noteAvant }}</td>
+              <td>{{ historiqueNote.noteApres }}</td>
+              <td [jhiTranslate]="'forbidecBackendApp.StatutNote.' + (historiqueNote.statutAvant ?? 'null')">
+                {{
+                  { null: '', NON_SAISIE: 'NON_SAISIE', SAISIE: 'SAISIE', ABSENT: 'ABSENT', DISPENSE: 'DISPENSE', VALIDEE: 'VALIDEE' }[
+                    historiqueNote.statutAvant ?? 'null'
+                  ]
+                }}
+              </td>
+              <td [jhiTranslate]="'forbidecBackendApp.StatutNote.' + (historiqueNote.statutApres ?? 'null')">
+                {{
+                  { null: '', NON_SAISIE: 'NON_SAISIE', SAISIE: 'SAISIE', ABSENT: 'ABSENT', DISPENSE: 'DISPENSE', VALIDEE: 'VALIDEE' }[
+                    historiqueNote.statutApres ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ historiqueNote.motif }}</td>
+              <td>{{ historiqueNote.modifiePar }}</td>
+              <td>{{ historiqueNote.modifieLe | formatMediumDatetime }}</td>
+              <td>
+                @if (historiqueNote.evaluationRealisee) {
+                  <div>
+                    <a [routerLink]="['/evaluation-realisee', historiqueNote.evaluationRealisee.id, 'view']">{{
+                      historiqueNote.evaluationRealisee.statut
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/historique-note', historiqueNote.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

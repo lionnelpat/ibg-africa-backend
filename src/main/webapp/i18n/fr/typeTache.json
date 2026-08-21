@@ -1,0 +1,31 @@
+{
+  "forbidecBackendApp": {
+    "typeTache": {
+      "home": {
+        "title": "TypeTaches",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Type Tache",
+        "createOrEditLabel": "Créer ou éditer un Type Tache",
+        "notFound": "Aucun Type Tache trouvé"
+      },
+      "created": "Un nouveau Type Tache a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Type Tache avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Type Tache avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Type Tache {{ id }} ?"
+      },
+      "detail": {
+        "title": "Type Tache"
+      },
+      "id": "ID",
+      "code": "Code",
+      "intitule": "Intitule",
+      "libelleLong": "Libelle Long",
+      "libelleCourt": "Libelle Court",
+      "entreDansMoyenne": "Entre Dans Moyenne",
+      "commentaire": "Commentaire",
+      "actif": "Actif",
+      "evaluation": "Evaluation"
+    }
+  }
+}

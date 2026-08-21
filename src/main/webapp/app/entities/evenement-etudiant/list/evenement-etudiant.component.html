@@ -1,0 +1,140 @@
+<div>
+  <h2 id="page-heading" data-cy="EvenementEtudiantHeading">
+    <span jhiTranslate="forbidecBackendApp.evenementEtudiant.home.title">EvenementEtudiants</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.evenementEtudiant.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-evenement-etudiant"
+        [routerLink]="['/evenement-etudiant/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.evenementEtudiant.home.createLabel">Créer un nouveau Evenement Etudiant</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (evenementEtudiants().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.evenementEtudiant.home.notFound">Aucun Evenement Etudiant trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateEvenement">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evenementEtudiant.dateEvenement">Date Evenement</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="intitule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evenementEtudiant.intitule">Intitule</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evenementEtudiant.commentaire">Commentaire</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="etudiant.nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.evenementEtudiant.etudiant">Etudiant</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (evenementEtudiant of evenementEtudiants(); track trackId(evenementEtudiant)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/evenement-etudiant', evenementEtudiant.id, 'view']">{{ evenementEtudiant.id }}</a>
+              </td>
+              <td>{{ evenementEtudiant.dateEvenement | formatMediumDate }}</td>
+              <td>{{ evenementEtudiant.intitule }}</td>
+              <td>{{ evenementEtudiant.commentaire }}</td>
+              <td>
+                @if (evenementEtudiant.etudiant) {
+                  <div>
+                    <a [routerLink]="['/etudiant', evenementEtudiant.etudiant.id, 'view']">{{ evenementEtudiant.etudiant.nom }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/evenement-etudiant', evenementEtudiant.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/evenement-etudiant', evenementEtudiant.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(evenementEtudiant)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (evenementEtudiants().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

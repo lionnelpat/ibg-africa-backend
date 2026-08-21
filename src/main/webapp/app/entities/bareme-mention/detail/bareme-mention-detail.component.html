@@ -1,0 +1,76 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (baremeMention(); as baremeMentionRef) {
+      <div>
+        <h2 data-cy="baremeMentionDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.baremeMention.detail.title">Bareme Mention</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.libelleLong">Libelle Long</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.libelleLong }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.libelleCourt">Libelle Court</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.libelleCourt }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.borneMin">Borne Min</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.borneMin }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.minInclus">Min Inclus</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.minInclus }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.borneMax">Borne Max</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.borneMax }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.maxInclus">Max Inclus</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.maxInclus }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.ordreAffichage">Ordre Affichage</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.ordreAffichage }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.actif">Actif</span></dt>
+          <dd>
+            <span>{{ baremeMentionRef.actif }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.baremeMention.centre">Centre</span></dt>
+          <dd>
+            @if (baremeMention()!.centre) {
+              <div>
+                <a [routerLink]="['/centre-formation', baremeMention()!.centre?.id, 'view']">{{ baremeMentionRef.centre?.code }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/bareme-mention', baremeMentionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

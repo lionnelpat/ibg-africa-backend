@@ -1,0 +1,116 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (evaluationPrevue(); as evaluationPrevueRef) {
+      <div>
+        <h2 data-cy="evaluationPrevueDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.evaluationPrevue.detail.title">Evaluation Prevue</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.intitule">Intitule</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.intitule }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.libelleImpression">Libelle Impression</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.libelleImpression }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.coefficient">Coefficient</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.coefficient }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.compteDansMoyenne">Compte Dans Moyenne</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.compteDansMoyenne }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.noteMaximale">Note Maximale</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.noteMaximale }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.dateDebut">Date Debut</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.dateDebut | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.dateFin">Date Fin</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.dateFin | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ evaluationPrevueRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.cycle">Cycle</span></dt>
+          <dd>
+            @if (evaluationPrevue()!.cycle) {
+              <div>
+                <a [routerLink]="['/cycle', evaluationPrevue()!.cycle?.id, 'view']">{{ evaluationPrevueRef.cycle?.annee }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.enseignant">Enseignant</span></dt>
+          <dd>
+            @if (evaluationPrevue()!.enseignant) {
+              <div>
+                <a [routerLink]="['/enseignant', evaluationPrevue()!.enseignant?.id, 'view']">{{ evaluationPrevueRef.enseignant?.nom }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.matiere">Matiere</span></dt>
+          <dd>
+            @if (evaluationPrevue()!.matiere) {
+              <div>
+                <a [routerLink]="['/matiere', evaluationPrevue()!.matiere?.id, 'view']">{{ evaluationPrevueRef.matiere?.intitule }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.sousMatiere">Sous Matiere</span></dt>
+          <dd>
+            @if (evaluationPrevue()!.sousMatiere) {
+              <div>
+                <a [routerLink]="['/sous-matiere', evaluationPrevue()!.sousMatiere?.id, 'view']">{{
+                  evaluationPrevueRef.sousMatiere?.intitule
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.cours">Cours</span></dt>
+          <dd>
+            @if (evaluationPrevue()!.cours) {
+              <div>
+                <a [routerLink]="['/cours', evaluationPrevue()!.cours?.id, 'view']">{{ evaluationPrevueRef.cours?.intitule }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evaluationPrevue.typeTache">Type Tache</span></dt>
+          <dd>
+            @if (evaluationPrevue()!.typeTache) {
+              <div>
+                <a [routerLink]="['/type-tache', evaluationPrevue()!.typeTache?.id, 'view']">{{
+                  evaluationPrevueRef.typeTache?.intitule
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/evaluation-prevue', evaluationPrevueRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

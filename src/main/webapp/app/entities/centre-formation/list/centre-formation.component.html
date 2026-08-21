@@ -1,0 +1,192 @@
+<div>
+  <h2 id="page-heading" data-cy="CentreFormationHeading">
+    <span jhiTranslate="forbidecBackendApp.centreFormation.home.title">CentreFormations</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.centreFormation.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-centre-formation"
+        [routerLink]="['/centre-formation/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.centreFormation.home.createLabel">Créer un nouveau Centre Formation</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (centreFormations().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.centreFormation.home.notFound">Aucun Centre Formation trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="code">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.code">Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.nom">Nom</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ville">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.ville">Ville</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="adresse">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.adresse">Adresse</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="enteteDocument">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.enteteDocument">Entete Document</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="signataire">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.signataire">Signataire</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="logoUrl">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.logoUrl">Logo Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nbCyclesCursus">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.nbCyclesCursus">Nb Cycles Cursus</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="noteMaximale">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.noteMaximale">Note Maximale</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="actif">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.actif">Actif</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pays.nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.centreFormation.pays">Pays</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (centreFormation of centreFormations(); track trackId(centreFormation)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/centre-formation', centreFormation.id, 'view']">{{ centreFormation.id }}</a>
+              </td>
+              <td>{{ centreFormation.code }}</td>
+              <td>{{ centreFormation.nom }}</td>
+              <td>{{ centreFormation.ville }}</td>
+              <td>{{ centreFormation.adresse }}</td>
+              <td>{{ centreFormation.enteteDocument }}</td>
+              <td>{{ centreFormation.signataire }}</td>
+              <td>{{ centreFormation.logoUrl }}</td>
+              <td>{{ centreFormation.nbCyclesCursus }}</td>
+              <td>{{ centreFormation.noteMaximale }}</td>
+              <td>{{ centreFormation.actif }}</td>
+              <td>
+                @if (centreFormation.pays) {
+                  <div>
+                    <a [routerLink]="['/pays', centreFormation.pays.id, 'view']">{{ centreFormation.pays.nom }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/cycle']"
+                    [queryParams]="{ 'filter[centreId.in]': centreFormation.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('forbidecBackendApp.centreFormation.cycle' | translate) }"
+                      >Show Cycle</span
+                    >
+                  </button>
+                  <a
+                    [routerLink]="['/centre-formation', centreFormation.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/centre-formation', centreFormation.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(centreFormation)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,29 @@
+{
+  "forbidecBackendApp": {
+    "habilitationCycle": {
+      "home": {
+        "title": "HabilitationCycles",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Habilitation Cycle",
+        "createOrEditLabel": "Créer ou éditer un Habilitation Cycle",
+        "notFound": "Aucun Habilitation Cycle trouvé"
+      },
+      "created": "Un nouveau Habilitation Cycle a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Habilitation Cycle avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Habilitation Cycle avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Habilitation Cycle {{ id }} ?"
+      },
+      "detail": {
+        "title": "Habilitation Cycle"
+      },
+      "id": "ID",
+      "keycloakUserId": "Keycloak User Id",
+      "roleFonctionnel": "Role Fonctionnel",
+      "dateDebut": "Date Debut",
+      "dateFin": "Date Fin",
+      "centre": "Centre",
+      "cycle": "Cycle"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (centreFormation(); as centreFormationRef) {
+      <div>
+        <h2 data-cy="centreFormationDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.centreFormation.detail.title">Centre Formation</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.code">Code</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.nom">Nom</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.nom }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.ville">Ville</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.ville }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.adresse">Adresse</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.adresse }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.enteteDocument">Entete Document</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.enteteDocument }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.signataire">Signataire</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.signataire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.logoUrl">Logo Url</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.logoUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.nbCyclesCursus">Nb Cycles Cursus</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.nbCyclesCursus }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.noteMaximale">Note Maximale</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.noteMaximale }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.actif">Actif</span></dt>
+          <dd>
+            <span>{{ centreFormationRef.actif }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.centreFormation.pays">Pays</span></dt>
+          <dd>
+            @if (centreFormation()!.pays) {
+              <div>
+                <a [routerLink]="['/pays', centreFormation()!.pays?.id, 'view']">{{ centreFormationRef.pays?.nom }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/centre-formation', centreFormationRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

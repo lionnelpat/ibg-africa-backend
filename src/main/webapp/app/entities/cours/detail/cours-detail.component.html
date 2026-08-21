@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (cours(); as coursRef) {
+      <div>
+        <h2 data-cy="coursDetailsHeading"><span jhiTranslate="forbidecBackendApp.cours.detail.title">Cours</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ coursRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.intitule">Intitule</span></dt>
+          <dd>
+            <span>{{ coursRef.intitule }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.libelleLong">Libelle Long</span></dt>
+          <dd>
+            <span>{{ coursRef.libelleLong }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.libelleCourt">Libelle Court</span></dt>
+          <dd>
+            <span>{{ coursRef.libelleCourt }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.ordreAffichage">Ordre Affichage</span></dt>
+          <dd>
+            <span>{{ coursRef.ordreAffichage }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.nbPeriodes">Nb Periodes</span></dt>
+          <dd>
+            <span>{{ coursRef.nbPeriodes }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.coefficient">Coefficient</span></dt>
+          <dd>
+            <span>{{ coursRef.coefficient }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.dateDebut">Date Debut</span></dt>
+          <dd>
+            <span>{{ coursRef.dateDebut | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.dateFin">Date Fin</span></dt>
+          <dd>
+            <span>{{ coursRef.dateFin | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ coursRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cours.actif">Actif</span></dt>
+          <dd>
+            <span>{{ coursRef.actif }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/cours', coursRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

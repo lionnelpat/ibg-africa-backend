@@ -1,0 +1,143 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-parametre-heading"
+        data-cy="ParametreCreateUpdateHeading"
+        jhiTranslate="forbidecBackendApp.parametre.home.createOrEditLabel"
+      >
+        Créer ou éditer un Parametre
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="forbidecBackendApp.parametre.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let cleRef = editForm.get('cle')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_cle" jhiTranslate="forbidecBackendApp.parametre.cle">Cle</label>
+          <input type="text" class="form-control" name="cle" id="field_cle" data-cy="cle" formControlName="cle" />
+          @if (cleRef.invalid && (cleRef.dirty || cleRef.touched)) {
+            <div>
+              @if (editForm.get('cle')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('cle')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '80' }"
+                  >Ce champ doit faire moins de 80 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let libelleRef = editForm.get('libelle')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_libelle" jhiTranslate="forbidecBackendApp.parametre.libelle">Libelle</label>
+          <input type="text" class="form-control" name="libelle" id="field_libelle" data-cy="libelle" formControlName="libelle" />
+          @if (libelleRef.invalid && (libelleRef.dirty || libelleRef.touched)) {
+            <div>
+              @if (editForm.get('libelle')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >Ce champ doit faire moins de 255 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let valeurRef = editForm.get('valeur')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_valeur" jhiTranslate="forbidecBackendApp.parametre.valeur">Valeur</label>
+          <input type="text" class="form-control" name="valeur" id="field_valeur" data-cy="valeur" formControlName="valeur" />
+          @if (valeurRef.invalid && (valeurRef.dirty || valeurRef.touched)) {
+            <div>
+              @if (editForm.get('valeur')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >Ce champ doit faire moins de 500 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let typeValeurRef = editForm.get('typeValeur')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_typeValeur" jhiTranslate="forbidecBackendApp.parametre.typeValeur">Type Valeur</label>
+          <select class="form-control" name="typeValeur" formControlName="typeValeur" id="field_typeValeur" data-cy="typeValeur">
+            <option [ngValue]="null">{{ 'forbidecBackendApp.TypeValeur.null' | translate }}</option>
+            @for (typeValeur of typeValeurValues; track $index) {
+              <option [value]="typeValeur">{{ 'forbidecBackendApp.TypeValeur.' + typeValeur | translate }}</option>
+            }
+          </select>
+          @if (typeValeurRef.invalid && (typeValeurRef.dirty || typeValeurRef.touched)) {
+            <div>
+              @if (editForm.get('typeValeur')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let modifiableUiRef = editForm.get('modifiableUi')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_modifiableUi" jhiTranslate="forbidecBackendApp.parametre.modifiableUi">Modifiable Ui</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="modifiableUi"
+            id="field_modifiableUi"
+            data-cy="modifiableUi"
+            formControlName="modifiableUi"
+          />
+          @if (modifiableUiRef.invalid && (modifiableUiRef.dirty || modifiableUiRef.touched)) {
+            <div>
+              @if (editForm.get('modifiableUi')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_centre" jhiTranslate="forbidecBackendApp.parametre.centre">Centre</label>
+          <select
+            class="form-control"
+            id="field_centre"
+            data-cy="centre"
+            name="centre"
+            formControlName="centre"
+            [compareWith]="compareCentreFormation"
+          >
+            <option [ngValue]="null"></option>
+            @for (centreFormationOption of centreFormationsSharedCollection; track $index) {
+              <option [ngValue]="centreFormationOption">{{ centreFormationOption.code }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

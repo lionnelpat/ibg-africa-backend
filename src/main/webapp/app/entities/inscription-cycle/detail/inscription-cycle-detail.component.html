@@ -1,0 +1,76 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (inscriptionCycle(); as inscriptionCycleRef) {
+      <div>
+        <h2 data-cy="inscriptionCycleDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.inscriptionCycle.detail.title">Inscription Cycle</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.dateInscription">Date Inscription</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.dateInscription | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.cycleTermine">Cycle Termine</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.cycleTermine }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.groupe">Groupe</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.groupe }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire1">Commentaire 1</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.commentaire1 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire2">Commentaire 2</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.commentaire2 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire3">Commentaire 3</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.commentaire3 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire5">Commentaire 5</span></dt>
+          <dd>
+            <span>{{ inscriptionCycleRef.commentaire5 }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.cycle">Cycle</span></dt>
+          <dd>
+            @if (inscriptionCycle()!.cycle) {
+              <div>
+                <a [routerLink]="['/cycle', inscriptionCycle()!.cycle?.id, 'view']">{{ inscriptionCycleRef.cycle?.annee }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.inscriptionCycle.etudiant">Etudiant</span></dt>
+          <dd>
+            @if (inscriptionCycle()!.etudiant) {
+              <div>
+                <a [routerLink]="['/etudiant', inscriptionCycle()!.etudiant?.id, 'view']">{{ inscriptionCycleRef.etudiant?.nom }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/inscription-cycle', inscriptionCycleRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

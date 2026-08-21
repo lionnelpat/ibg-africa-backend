@@ -1,0 +1,79 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000059"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Promotion annuelle d'un centre. cloture verrouille toute saisie.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "annee",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min", "max"],
+      "fieldValidateRulesMax": "2200",
+      "fieldValidateRulesMin": "1900"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "cloture",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Cycle",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "code",
+      "otherEntityName": "centreFormation",
+      "otherEntityRelationshipName": "cycle",
+      "relationshipName": "centre",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "inscriptionCycle",
+      "otherEntityRelationshipName": "cycle",
+      "relationshipName": "inscription",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "evaluationPrevue",
+      "otherEntityRelationshipName": "cycle",
+      "relationshipName": "evaluation",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "habilitationCycle",
+      "otherEntityRelationshipName": "cycle",
+      "relationshipName": "habilitation",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

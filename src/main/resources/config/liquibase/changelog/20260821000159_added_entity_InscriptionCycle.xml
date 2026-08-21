@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity InscriptionCycle.
+    -->
+    <changeSet id="20260821000159-1" author="jhipster">
+        <createTable tableName="inscription_cycle" remarks="Inscription d&apos;un étudiant à un cycle.\ncommentaire1/2/3/5 sont conservés à l&apos;identique le temps que leur\nusage réel soit élucidé ; ils sont quasi vides dans la base migrée.">
+            <column name="id" type="bigint" autoIncrement="true" startWith="1500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="date_inscription" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="cycle_termine" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="groupe" type="varchar(100)">
+                <constraints nullable="true" />
+            </column>
+            <column name="commentaire_1" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="commentaire_2" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="commentaire_3" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="commentaire_5" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="cycle_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="etudiant_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20260821000159-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/inscription_cycle.csv"
+                  separator=";"
+                  tableName="inscription_cycle"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="date_inscription" type="date"/>
+            <column name="cycle_termine" type="boolean"/>
+            <column name="groupe" type="string"/>
+            <column name="commentaire_1" type="string"/>
+            <column name="commentaire_2" type="string"/>
+            <column name="commentaire_3" type="string"/>
+            <column name="commentaire_5" type="string"/>
+            <column name="cycle_id" type="numeric"/>
+            <column name="etudiant_id" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

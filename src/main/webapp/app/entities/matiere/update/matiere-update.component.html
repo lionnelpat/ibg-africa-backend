@@ -1,0 +1,133 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-matiere-heading" data-cy="MatiereCreateUpdateHeading" jhiTranslate="forbidecBackendApp.matiere.home.createOrEditLabel">
+        Créer ou éditer un Matiere
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="forbidecBackendApp.matiere.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let intituleRef = editForm.get('intitule')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_intitule" jhiTranslate="forbidecBackendApp.matiere.intitule">Intitule</label>
+          <input type="text" class="form-control" name="intitule" id="field_intitule" data-cy="intitule" formControlName="intitule" />
+          @if (intituleRef.invalid && (intituleRef.dirty || intituleRef.touched)) {
+            <div>
+              @if (editForm.get('intitule')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('intitule')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >Ce champ doit faire moins de 100 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let libelleLongRef = editForm.get('libelleLong')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_libelleLong" jhiTranslate="forbidecBackendApp.matiere.libelleLong">Libelle Long</label>
+          <input
+            type="text"
+            class="form-control"
+            name="libelleLong"
+            id="field_libelleLong"
+            data-cy="libelleLong"
+            formControlName="libelleLong"
+          />
+          @if (libelleLongRef.invalid && (libelleLongRef.dirty || libelleLongRef.touched)) {
+            <div>
+              @if (editForm.get('libelleLong')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >Ce champ doit faire moins de 100 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let libelleCourtRef = editForm.get('libelleCourt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_libelleCourt" jhiTranslate="forbidecBackendApp.matiere.libelleCourt">Libelle Court</label>
+          <input
+            type="text"
+            class="form-control"
+            name="libelleCourt"
+            id="field_libelleCourt"
+            data-cy="libelleCourt"
+            formControlName="libelleCourt"
+          />
+          @if (libelleCourtRef.invalid && (libelleCourtRef.dirty || libelleCourtRef.touched)) {
+            <div>
+              @if (editForm.get('libelleCourt')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '50' }"
+                  >Ce champ doit faire moins de 50 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let commentaireRef = editForm.get('commentaire')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_commentaire" jhiTranslate="forbidecBackendApp.matiere.commentaire">Commentaire</label>
+          <input
+            type="text"
+            class="form-control"
+            name="commentaire"
+            id="field_commentaire"
+            data-cy="commentaire"
+            formControlName="commentaire"
+          />
+          @if (commentaireRef.invalid && (commentaireRef.dirty || commentaireRef.touched)) {
+            <div>
+              @if (editForm.get('commentaire')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >Ce champ doit faire moins de 255 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let actifRef = editForm.get('actif')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_actif" jhiTranslate="forbidecBackendApp.matiere.actif">Actif</label>
+          <input type="checkbox" class="form-check" name="actif" id="field_actif" data-cy="actif" formControlName="actif" />
+          @if (actifRef.invalid && (actifRef.dirty || actifRef.touched)) {
+            <div>
+              @if (editForm.get('actif')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

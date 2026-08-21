@@ -1,0 +1,161 @@
+<div>
+  <h2 id="page-heading" data-cy="BaremeMentionHeading">
+    <span jhiTranslate="forbidecBackendApp.baremeMention.home.title">BaremeMentions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.baremeMention.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-bareme-mention"
+        [routerLink]="['/bareme-mention/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.baremeMention.home.createLabel">Créer un nouveau Bareme Mention</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (baremeMentions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.baremeMention.home.notFound">Aucun Bareme Mention trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="libelleLong">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.libelleLong">Libelle Long</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="libelleCourt">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.libelleCourt">Libelle Court</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="borneMin">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.borneMin">Borne Min</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="minInclus">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.minInclus">Min Inclus</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="borneMax">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.borneMax">Borne Max</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="maxInclus">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.maxInclus">Max Inclus</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ordreAffichage">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.ordreAffichage">Ordre Affichage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.commentaire">Commentaire</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="actif">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.actif">Actif</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="centre.code">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.baremeMention.centre">Centre</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (baremeMention of baremeMentions(); track trackId(baremeMention)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/bareme-mention', baremeMention.id, 'view']">{{ baremeMention.id }}</a>
+              </td>
+              <td>{{ baremeMention.libelleLong }}</td>
+              <td>{{ baremeMention.libelleCourt }}</td>
+              <td>{{ baremeMention.borneMin }}</td>
+              <td>{{ baremeMention.minInclus }}</td>
+              <td>{{ baremeMention.borneMax }}</td>
+              <td>{{ baremeMention.maxInclus }}</td>
+              <td>{{ baremeMention.ordreAffichage }}</td>
+              <td>{{ baremeMention.commentaire }}</td>
+              <td>{{ baremeMention.actif }}</td>
+              <td>
+                @if (baremeMention.centre) {
+                  <div>
+                    <a [routerLink]="['/centre-formation', baremeMention.centre.id, 'view']">{{ baremeMention.centre.code }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/bareme-mention', baremeMention.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/bareme-mention', baremeMention.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(baremeMention)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

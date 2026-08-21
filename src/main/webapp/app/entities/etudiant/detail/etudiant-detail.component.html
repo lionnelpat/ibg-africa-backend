@@ -1,0 +1,90 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (etudiant(); as etudiantRef) {
+      <div>
+        <h2 data-cy="etudiantDetailsHeading"><span jhiTranslate="forbidecBackendApp.etudiant.detail.title">Etudiant</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ etudiantRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.matricule">Matricule</span></dt>
+          <dd>
+            <span>{{ etudiantRef.matricule }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.nom">Nom</span></dt>
+          <dd>
+            <span>{{ etudiantRef.nom }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.prenom">Prenom</span></dt>
+          <dd>
+            <span>{{ etudiantRef.prenom }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.particularite">Particularite</span></dt>
+          <dd>
+            <span>{{ etudiantRef.particularite }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.dateNaissance">Date Naissance</span></dt>
+          <dd>
+            <span>{{ etudiantRef.dateNaissance | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.email">Email</span></dt>
+          <dd>
+            <span>{{ etudiantRef.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.telephone">Telephone</span></dt>
+          <dd>
+            <span>{{ etudiantRef.telephone }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.anneeEntree">Annee Entree</span></dt>
+          <dd>
+            <span>{{ etudiantRef.anneeEntree }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.cursusAcheve">Cursus Acheve</span></dt>
+          <dd>
+            <span>{{ etudiantRef.cursusAcheve }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.anneeFinale">Annee Finale</span></dt>
+          <dd>
+            <span>{{ etudiantRef.anneeFinale }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.keycloakUserId">Keycloak User Id</span></dt>
+          <dd>
+            <span>{{ etudiantRef.keycloakUserId }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ etudiantRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.actif">Actif</span></dt>
+          <dd>
+            <span>{{ etudiantRef.actif }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.etudiant.pays">Pays</span></dt>
+          <dd>
+            @if (etudiant()!.pays) {
+              <div>
+                <a [routerLink]="['/pays', etudiant()!.pays?.id, 'view']">{{ etudiantRef.pays?.nom }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/etudiant', etudiantRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

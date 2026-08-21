@@ -1,0 +1,123 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-pays-heading" data-cy="PaysCreateUpdateHeading" jhiTranslate="forbidecBackendApp.pays.home.createOrEditLabel">
+        Créer ou éditer un Pays
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="forbidecBackendApp.pays.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let codeIsoRef = editForm.get('codeIso')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_codeIso" jhiTranslate="forbidecBackendApp.pays.codeIso">Code Iso</label>
+          <input type="text" class="form-control" name="codeIso" id="field_codeIso" data-cy="codeIso" formControlName="codeIso" />
+          @if (codeIsoRef.invalid && (codeIsoRef.dirty || codeIsoRef.touched)) {
+            <div>
+              @if (editForm.get('codeIso')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('codeIso')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '2' }"
+                  >Ce champ doit faire au minimum 2 caractères.</small
+                >
+              }
+              @if (editForm.get('codeIso')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '2' }"
+                  >Ce champ doit faire moins de 2 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let nomRef = editForm.get('nom')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_nom" jhiTranslate="forbidecBackendApp.pays.nom">Nom</label>
+          <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
+          @if (nomRef.invalid && (nomRef.dirty || nomRef.touched)) {
+            <div>
+              @if (editForm.get('nom')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('nom')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >Ce champ doit faire moins de 100 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let langueRef = editForm.get('langue')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_langue" jhiTranslate="forbidecBackendApp.pays.langue">Langue</label>
+          <input type="text" class="form-control" name="langue" id="field_langue" data-cy="langue" formControlName="langue" />
+          @if (langueRef.invalid && (langueRef.dirty || langueRef.touched)) {
+            <div>
+              @if (editForm.get('langue')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('langue')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '5' }"
+                  >Ce champ doit faire moins de 5 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let fuseauRef = editForm.get('fuseau')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_fuseau" jhiTranslate="forbidecBackendApp.pays.fuseau">Fuseau</label>
+          <input type="text" class="form-control" name="fuseau" id="field_fuseau" data-cy="fuseau" formControlName="fuseau" />
+          @if (fuseauRef.invalid && (fuseauRef.dirty || fuseauRef.touched)) {
+            <div>
+              @if (editForm.get('fuseau')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '50' }"
+                  >Ce champ doit faire moins de 50 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let actifRef = editForm.get('actif')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_actif" jhiTranslate="forbidecBackendApp.pays.actif">Actif</label>
+          <input type="checkbox" class="form-check" name="actif" id="field_actif" data-cy="actif" formControlName="actif" />
+          @if (actifRef.invalid && (actifRef.dirty || actifRef.touched)) {
+            <div>
+              @if (editForm.get('actif')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

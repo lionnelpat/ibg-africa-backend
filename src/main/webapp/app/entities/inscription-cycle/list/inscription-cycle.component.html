@@ -1,0 +1,166 @@
+<div>
+  <h2 id="page-heading" data-cy="InscriptionCycleHeading">
+    <span jhiTranslate="forbidecBackendApp.inscriptionCycle.home.title">InscriptionCycles</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.inscriptionCycle.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-inscription-cycle"
+        [routerLink]="['/inscription-cycle/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.inscriptionCycle.home.createLabel">Créer un nouveau Inscription Cycle</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (inscriptionCycles().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.inscriptionCycle.home.notFound">Aucun Inscription Cycle trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateInscription">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.dateInscription">Date Inscription</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cycleTermine">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.cycleTermine">Cycle Termine</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="groupe">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.groupe">Groupe</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire1">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire1">Commentaire 1</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire2">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire2">Commentaire 2</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire3">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire3">Commentaire 3</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire5">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire5">Commentaire 5</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cycle.annee">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.cycle">Cycle</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="etudiant.nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.inscriptionCycle.etudiant">Etudiant</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (inscriptionCycle of inscriptionCycles(); track trackId(inscriptionCycle)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/inscription-cycle', inscriptionCycle.id, 'view']">{{ inscriptionCycle.id }}</a>
+              </td>
+              <td>{{ inscriptionCycle.dateInscription | formatMediumDate }}</td>
+              <td>{{ inscriptionCycle.cycleTermine }}</td>
+              <td>{{ inscriptionCycle.groupe }}</td>
+              <td>{{ inscriptionCycle.commentaire1 }}</td>
+              <td>{{ inscriptionCycle.commentaire2 }}</td>
+              <td>{{ inscriptionCycle.commentaire3 }}</td>
+              <td>{{ inscriptionCycle.commentaire5 }}</td>
+              <td>
+                @if (inscriptionCycle.cycle) {
+                  <div>
+                    <a [routerLink]="['/cycle', inscriptionCycle.cycle.id, 'view']">{{ inscriptionCycle.cycle.annee }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (inscriptionCycle.etudiant) {
+                  <div>
+                    <a [routerLink]="['/etudiant', inscriptionCycle.etudiant.id, 'view']">{{ inscriptionCycle.etudiant.nom }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/inscription-cycle', inscriptionCycle.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/inscription-cycle', inscriptionCycle.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(inscriptionCycle)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

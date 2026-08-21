@@ -1,0 +1,121 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000359"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Évaluation planifiée pour un cycle : le « quoi » et le « par qui ».",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "intitule",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "150"
+    },
+    {
+      "fieldName": "libelleImpression",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "150"
+    },
+    {
+      "fieldName": "coefficient",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "compteDansMoyenne",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "noteMaximale",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "dateDebut",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dateFin",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "EvaluationPrevue",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityField": "annee",
+      "otherEntityName": "cycle",
+      "otherEntityRelationshipName": "evaluation",
+      "relationshipName": "cycle",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "enseignant",
+      "otherEntityRelationshipName": "evaluation",
+      "relationshipName": "enseignant",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "intitule",
+      "otherEntityName": "matiere",
+      "otherEntityRelationshipName": "evaluation",
+      "relationshipName": "matiere",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "intitule",
+      "otherEntityName": "sousMatiere",
+      "otherEntityRelationshipName": "evaluation",
+      "relationshipName": "sousMatiere",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "intitule",
+      "otherEntityName": "cours",
+      "otherEntityRelationshipName": "evaluation",
+      "relationshipName": "cours",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "intitule",
+      "otherEntityName": "typeTache",
+      "otherEntityRelationshipName": "evaluation",
+      "relationshipName": "typeTache",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "evaluationRealisee",
+      "otherEntityRelationshipName": "evaluationPrevue",
+      "relationshipName": "note",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

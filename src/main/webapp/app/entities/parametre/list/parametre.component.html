@@ -1,0 +1,131 @@
+<div>
+  <h2 id="page-heading" data-cy="ParametreHeading">
+    <span jhiTranslate="forbidecBackendApp.parametre.home.title">Parametres</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.parametre.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-parametre"
+        [routerLink]="['/parametre/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.parametre.home.createLabel">Créer un nouveau Parametre</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (parametres().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.parametre.home.notFound">Aucun Parametre trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cle">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.parametre.cle">Cle</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="libelle">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.parametre.libelle">Libelle</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="valeur">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.parametre.valeur">Valeur</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="typeValeur">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.parametre.typeValeur">Type Valeur</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifiableUi">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.parametre.modifiableUi">Modifiable Ui</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="centre.code">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.parametre.centre">Centre</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (parametre of parametres(); track trackId(parametre)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/parametre', parametre.id, 'view']">{{ parametre.id }}</a>
+              </td>
+              <td>{{ parametre.cle }}</td>
+              <td>{{ parametre.libelle }}</td>
+              <td>{{ parametre.valeur }}</td>
+              <td [jhiTranslate]="'forbidecBackendApp.TypeValeur.' + (parametre.typeValeur ?? 'null')">
+                {{ { null: '', TEXTE: 'TEXTE', NOMBRE: 'NOMBRE', DATE: 'DATE', BOOLEEN: 'BOOLEEN' }[parametre.typeValeur ?? 'null'] }}
+              </td>
+              <td>{{ parametre.modifiableUi }}</td>
+              <td>
+                @if (parametre.centre) {
+                  <div>
+                    <a [routerLink]="['/centre-formation', parametre.centre.id, 'view']">{{ parametre.centre.code }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/parametre', parametre.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/parametre', parametre.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(parametre)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,29 @@
+{
+  "forbidecBackendApp": {
+    "sousMatiere": {
+      "home": {
+        "title": "SousMatieres",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Sous Matiere",
+        "createOrEditLabel": "Créer ou éditer un Sous Matiere",
+        "notFound": "Aucun Sous Matiere trouvé"
+      },
+      "created": "Un nouveau Sous Matiere a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Sous Matiere avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Sous Matiere avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Sous Matiere {{ id }} ?"
+      },
+      "detail": {
+        "title": "Sous Matiere"
+      },
+      "id": "ID",
+      "intitule": "Intitule",
+      "libelleLong": "Libelle Long",
+      "libelleCourt": "Libelle Court",
+      "commentaire": "Commentaire",
+      "actif": "Actif",
+      "evaluation": "Evaluation"
+    }
+  }
+}

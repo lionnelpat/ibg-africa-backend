@@ -1,0 +1,39 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000259"
+  },
+  "applications": ["forbidec_backend"],
+  "fields": [
+    {
+      "fieldName": "dateEvenement",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "intitule",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "150"
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    }
+  ],
+  "name": "EvenementEtudiant",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "etudiant",
+      "otherEntityRelationshipName": "evenement",
+      "relationshipName": "etudiant",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

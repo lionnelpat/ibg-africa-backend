@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20260820235359"
+  },
+  "applications": ["forbidec_backend"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "intitule",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "libelleLong",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "libelleCourt",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "50"
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Matiere",
+  "relationships": [
+    {
+      "otherEntityName": "evaluationPrevue",
+      "otherEntityRelationshipName": "matiere",
+      "relationshipName": "evaluation",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

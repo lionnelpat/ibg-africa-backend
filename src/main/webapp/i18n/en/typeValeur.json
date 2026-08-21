@@ -1,0 +1,11 @@
+{
+  "forbidecBackendApp": {
+    "TypeValeur": {
+      "null": "",
+      "TEXTE": "TEXTE",
+      "NOMBRE": "NOMBRE",
+      "DATE": "DATE",
+      "BOOLEEN": "BOOLEEN"
+    }
+  }
+}

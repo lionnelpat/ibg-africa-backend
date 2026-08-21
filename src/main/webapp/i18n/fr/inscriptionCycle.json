@@ -1,0 +1,32 @@
+{
+  "forbidecBackendApp": {
+    "inscriptionCycle": {
+      "home": {
+        "title": "InscriptionCycles",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Inscription Cycle",
+        "createOrEditLabel": "Créer ou éditer un Inscription Cycle",
+        "notFound": "Aucun Inscription Cycle trouvé"
+      },
+      "created": "Un nouveau Inscription Cycle a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Inscription Cycle avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Inscription Cycle avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Inscription Cycle {{ id }} ?"
+      },
+      "detail": {
+        "title": "Inscription Cycle"
+      },
+      "id": "ID",
+      "dateInscription": "Date Inscription",
+      "cycleTermine": "Cycle Termine",
+      "groupe": "Groupe",
+      "commentaire1": "Commentaire 1",
+      "commentaire2": "Commentaire 2",
+      "commentaire3": "Commentaire 3",
+      "commentaire5": "Commentaire 5",
+      "cycle": "Cycle",
+      "etudiant": "Etudiant"
+    }
+  }
+}

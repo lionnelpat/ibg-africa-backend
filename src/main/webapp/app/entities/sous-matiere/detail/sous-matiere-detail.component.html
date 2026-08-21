@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (sousMatiere(); as sousMatiereRef) {
+      <div>
+        <h2 data-cy="sousMatiereDetailsHeading"><span jhiTranslate="forbidecBackendApp.sousMatiere.detail.title">Sous Matiere</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ sousMatiereRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.sousMatiere.intitule">Intitule</span></dt>
+          <dd>
+            <span>{{ sousMatiereRef.intitule }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.sousMatiere.libelleLong">Libelle Long</span></dt>
+          <dd>
+            <span>{{ sousMatiereRef.libelleLong }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.sousMatiere.libelleCourt">Libelle Court</span></dt>
+          <dd>
+            <span>{{ sousMatiereRef.libelleCourt }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.sousMatiere.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ sousMatiereRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.sousMatiere.actif">Actif</span></dt>
+          <dd>
+            <span>{{ sousMatiereRef.actif }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/sous-matiere', sousMatiereRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

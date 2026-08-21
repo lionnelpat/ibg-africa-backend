@@ -1,0 +1,73 @@
+{
+  "annotations": {
+    "changelogDate": "20260820235759"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Barème des mentions. Reconstitué depuis le pied de page du bulletin :\\n[19-20] Excellent · [17-19[ Très-Bien · [15-17[ Bien\\n[12-15[ Assez-Bien · [10-12[ Suffisant · <10 Insuffisant\\nRattaché à un centre si celui-ci applique un barème propre ;\\nsans rattachement, le barème est commun à tous les centres.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "libelleLong",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "libelleCourt",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "50"
+    },
+    {
+      "fieldName": "borneMin",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "minInclus",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "borneMax",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "maxInclus",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "ordreAffichage",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "BaremeMention",
+  "relationships": [
+    {
+      "otherEntityField": "code",
+      "otherEntityName": "centreFormation",
+      "otherEntityRelationshipName": "bareme",
+      "relationshipName": "centre",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

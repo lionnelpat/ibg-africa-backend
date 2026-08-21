@@ -1,0 +1,193 @@
+<div>
+  <h2 id="page-heading" data-cy="EtudiantHeading">
+    <span jhiTranslate="forbidecBackendApp.etudiant.home.title">Etudiants</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.etudiant.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-etudiant"
+        [routerLink]="['/etudiant/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="forbidecBackendApp.etudiant.home.createLabel">Créer un nouveau Etudiant</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (etudiants().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="forbidecBackendApp.etudiant.home.notFound">Aucun Etudiant trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="matricule">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.matricule">Matricule</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.nom">Nom</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="prenom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.prenom">Prenom</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="particularite">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.particularite">Particularite</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateNaissance">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.dateNaissance">Date Naissance</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="email">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.email">Email</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="telephone">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.telephone">Telephone</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="anneeEntree">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.anneeEntree">Annee Entree</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cursusAcheve">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.cursusAcheve">Cursus Acheve</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="anneeFinale">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.anneeFinale">Annee Finale</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="keycloakUserId">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.keycloakUserId">Keycloak User Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commentaire">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.commentaire">Commentaire</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="actif">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.actif">Actif</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="pays.nom">
+              <div class="d-flex">
+                <span jhiTranslate="forbidecBackendApp.etudiant.pays">Pays</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (etudiant of etudiants(); track trackId(etudiant)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/etudiant', etudiant.id, 'view']">{{ etudiant.id }}</a>
+              </td>
+              <td>{{ etudiant.matricule }}</td>
+              <td>{{ etudiant.nom }}</td>
+              <td>{{ etudiant.prenom }}</td>
+              <td>{{ etudiant.particularite }}</td>
+              <td>{{ etudiant.dateNaissance | formatMediumDate }}</td>
+              <td>{{ etudiant.email }}</td>
+              <td>{{ etudiant.telephone }}</td>
+              <td>{{ etudiant.anneeEntree }}</td>
+              <td>{{ etudiant.cursusAcheve }}</td>
+              <td>{{ etudiant.anneeFinale }}</td>
+              <td>{{ etudiant.keycloakUserId }}</td>
+              <td>{{ etudiant.commentaire }}</td>
+              <td>{{ etudiant.actif }}</td>
+              <td>
+                @if (etudiant.pays) {
+                  <div>
+                    <a [routerLink]="['/pays', etudiant.pays.id, 'view']">{{ etudiant.pays.nom }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/etudiant', etudiant.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/etudiant', etudiant.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(etudiant)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

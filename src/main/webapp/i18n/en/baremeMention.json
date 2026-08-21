@@ -1,0 +1,33 @@
+{
+  "forbidecBackendApp": {
+    "baremeMention": {
+      "home": {
+        "title": "Bareme Mentions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Bareme Mention",
+        "createOrEditLabel": "Create or edit a Bareme Mention",
+        "notFound": "No Bareme Mentions found"
+      },
+      "created": "A new Bareme Mention is created with identifier {{ param }}",
+      "updated": "A Bareme Mention is updated with identifier {{ param }}",
+      "deleted": "A Bareme Mention is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Bareme Mention {{ id }}?"
+      },
+      "detail": {
+        "title": "Bareme Mention"
+      },
+      "id": "ID",
+      "libelleLong": "Libelle Long",
+      "libelleCourt": "Libelle Court",
+      "borneMin": "Borne Min",
+      "minInclus": "Min Inclus",
+      "borneMax": "Borne Max",
+      "maxInclus": "Max Inclus",
+      "ordreAffichage": "Ordre Affichage",
+      "commentaire": "Commentaire",
+      "actif": "Actif",
+      "centre": "Centre"
+    }
+  }
+}

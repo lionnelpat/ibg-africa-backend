@@ -1,0 +1,239 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-inscription-cycle-heading"
+        data-cy="InscriptionCycleCreateUpdateHeading"
+        jhiTranslate="forbidecBackendApp.inscriptionCycle.home.createOrEditLabel"
+      >
+        Créer ou éditer un Inscription Cycle
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="forbidecBackendApp.inscriptionCycle.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_dateInscription" jhiTranslate="forbidecBackendApp.inscriptionCycle.dateInscription"
+            >Date Inscription</label
+          >
+          <div class="input-group">
+            <input
+              id="field_dateInscription"
+              data-cy="dateInscription"
+              type="text"
+              class="form-control"
+              name="dateInscription"
+              ngbDatepicker
+              #dateInscriptionDp="ngbDatepicker"
+              formControlName="dateInscription"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateInscriptionDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        @let cycleTermineRef = editForm.get('cycleTermine')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_cycleTermine" jhiTranslate="forbidecBackendApp.inscriptionCycle.cycleTermine"
+            >Cycle Termine</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="cycleTermine"
+            id="field_cycleTermine"
+            data-cy="cycleTermine"
+            formControlName="cycleTermine"
+          />
+          @if (cycleTermineRef.invalid && (cycleTermineRef.dirty || cycleTermineRef.touched)) {
+            <div>
+              @if (editForm.get('cycleTermine')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let groupeRef = editForm.get('groupe')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_groupe" jhiTranslate="forbidecBackendApp.inscriptionCycle.groupe">Groupe</label>
+          <input type="text" class="form-control" name="groupe" id="field_groupe" data-cy="groupe" formControlName="groupe" />
+          @if (groupeRef.invalid && (groupeRef.dirty || groupeRef.touched)) {
+            <div>
+              @if (editForm.get('groupe')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >Ce champ doit faire moins de 100 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let commentaire1Ref = editForm.get('commentaire1')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_commentaire1" jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire1"
+            >Commentaire 1</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="commentaire1"
+            id="field_commentaire1"
+            data-cy="commentaire1"
+            formControlName="commentaire1"
+          />
+          @if (commentaire1Ref.invalid && (commentaire1Ref.dirty || commentaire1Ref.touched)) {
+            <div>
+              @if (editForm.get('commentaire1')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >Ce champ doit faire moins de 255 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let commentaire2Ref = editForm.get('commentaire2')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_commentaire2" jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire2"
+            >Commentaire 2</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="commentaire2"
+            id="field_commentaire2"
+            data-cy="commentaire2"
+            formControlName="commentaire2"
+          />
+          @if (commentaire2Ref.invalid && (commentaire2Ref.dirty || commentaire2Ref.touched)) {
+            <div>
+              @if (editForm.get('commentaire2')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >Ce champ doit faire moins de 255 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let commentaire3Ref = editForm.get('commentaire3')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_commentaire3" jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire3"
+            >Commentaire 3</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="commentaire3"
+            id="field_commentaire3"
+            data-cy="commentaire3"
+            formControlName="commentaire3"
+          />
+          @if (commentaire3Ref.invalid && (commentaire3Ref.dirty || commentaire3Ref.touched)) {
+            <div>
+              @if (editForm.get('commentaire3')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >Ce champ doit faire moins de 255 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let commentaire5Ref = editForm.get('commentaire5')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_commentaire5" jhiTranslate="forbidecBackendApp.inscriptionCycle.commentaire5"
+            >Commentaire 5</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="commentaire5"
+            id="field_commentaire5"
+            data-cy="commentaire5"
+            formControlName="commentaire5"
+          />
+          @if (commentaire5Ref.invalid && (commentaire5Ref.dirty || commentaire5Ref.touched)) {
+            <div>
+              @if (editForm.get('commentaire5')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >Ce champ doit faire moins de 255 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_cycle" jhiTranslate="forbidecBackendApp.inscriptionCycle.cycle">Cycle</label>
+          <select class="form-control" id="field_cycle" data-cy="cycle" name="cycle" formControlName="cycle" [compareWith]="compareCycle">
+            @if (editForm.get(['cycle'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (cycleOption of cyclesSharedCollection; track $index) {
+              <option [ngValue]="cycleOption">{{ cycleOption.annee }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['cycle'])!.invalid && (editForm.get(['cycle'])!.dirty || editForm.get(['cycle'])!.touched)) {
+          <div>
+            @if (editForm.get(['cycle'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_etudiant" jhiTranslate="forbidecBackendApp.inscriptionCycle.etudiant">Etudiant</label>
+          <select
+            class="form-control"
+            id="field_etudiant"
+            data-cy="etudiant"
+            name="etudiant"
+            formControlName="etudiant"
+            [compareWith]="compareEtudiant"
+          >
+            @if (editForm.get(['etudiant'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (etudiantOption of etudiantsSharedCollection; track $index) {
+              <option [ngValue]="etudiantOption">{{ etudiantOption.nom }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['etudiant'])!.invalid && (editForm.get(['etudiant'])!.dirty || editForm.get(['etudiant'])!.touched)) {
+          <div>
+            @if (editForm.get(['etudiant'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+{
+  "forbidecBackendApp": {
+    "evaluationPrevue": {
+      "home": {
+        "title": "EvaluationPrevues",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Evaluation Prevue",
+        "createOrEditLabel": "Créer ou éditer un Evaluation Prevue",
+        "notFound": "Aucun Evaluation Prevue trouvé"
+      },
+      "created": "Un nouveau Evaluation Prevue a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Evaluation Prevue avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Evaluation Prevue avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Evaluation Prevue {{ id }} ?"
+      },
+      "detail": {
+        "title": "Evaluation Prevue"
+      },
+      "id": "ID",
+      "intitule": "Intitule",
+      "libelleImpression": "Libelle Impression",
+      "coefficient": "Coefficient",
+      "compteDansMoyenne": "Compte Dans Moyenne",
+      "noteMaximale": "Note Maximale",
+      "dateDebut": "Date Debut",
+      "dateFin": "Date Fin",
+      "commentaire": "Commentaire",
+      "cycle": "Cycle",
+      "enseignant": "Enseignant",
+      "matiere": "Matiere",
+      "sousMatiere": "Sous Matiere",
+      "cours": "Cours",
+      "typeTache": "Type Tache",
+      "note": "Note"
+    }
+  }
+}

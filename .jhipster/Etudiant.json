@@ -1,0 +1,122 @@
+{
+  "annotations": {
+    "changelogDate": "20260820235959"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Étudiant.\\nmatricule remplace le triplet (nom, prénom, particularité) comme clé\\nmétier : la base contient 5 homonymes stricts.\\nanneeEntree et cursusAcheve sont dérivés de champs texte Access\\n(« Se - 2014 », « Finaliste en 2022 » — 165 étudiants concernés).",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "matricule",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "30"
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "80"
+    },
+    {
+      "fieldName": "prenom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "80"
+    },
+    {
+      "fieldName": "particularite",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "80"
+    },
+    {
+      "fieldName": "dateNaissance",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "150"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "30"
+    },
+    {
+      "fieldName": "anneeEntree",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["min", "max"],
+      "fieldValidateRulesMax": "2200",
+      "fieldValidateRulesMin": "1900"
+    },
+    {
+      "fieldName": "cursusAcheve",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "anneeFinale",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["min", "max"],
+      "fieldValidateRulesMax": "2200",
+      "fieldValidateRulesMin": "1900"
+    },
+    {
+      "fieldName": "keycloakUserId",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "commentaire",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Etudiant",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "pays",
+      "otherEntityRelationshipName": "etudiant",
+      "relationshipName": "pays",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "inscriptionCycle",
+      "otherEntityRelationshipName": "etudiant",
+      "relationshipName": "inscription",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "evenementEtudiant",
+      "otherEntityRelationshipName": "etudiant",
+      "relationshipName": "evenement",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "evaluationRealisee",
+      "otherEntityRelationshipName": "etudiant",
+      "relationshipName": "note",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

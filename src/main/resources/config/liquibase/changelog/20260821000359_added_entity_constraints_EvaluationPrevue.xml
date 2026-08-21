@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity EvaluationPrevue.
+    -->
+    <changeSet id="20260821000359-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="cycle_id"
+                                 baseTableName="evaluation_prevue"
+                                 constraintName="fk_evaluation_prevue__cycle_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cycle"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="enseignant_id"
+                                 baseTableName="evaluation_prevue"
+                                 constraintName="fk_evaluation_prevue__enseignant_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="enseignant"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="matiere_id"
+                                 baseTableName="evaluation_prevue"
+                                 constraintName="fk_evaluation_prevue__matiere_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="matiere"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="sous_matiere_id"
+                                 baseTableName="evaluation_prevue"
+                                 constraintName="fk_evaluation_prevue__sous_matiere_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="sous_matiere"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="cours_id"
+                                 baseTableName="evaluation_prevue"
+                                 constraintName="fk_evaluation_prevue__cours_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cours"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="type_tache_id"
+                                 baseTableName="evaluation_prevue"
+                                 constraintName="fk_evaluation_prevue__type_tache_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="type_tache"
+                                 />
+    </changeSet>
+</databaseChangeLog>

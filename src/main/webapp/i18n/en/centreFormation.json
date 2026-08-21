@@ -1,0 +1,38 @@
+{
+  "forbidecBackendApp": {
+    "centreFormation": {
+      "home": {
+        "title": "Centre Formations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Centre Formation",
+        "createOrEditLabel": "Create or edit a Centre Formation",
+        "notFound": "No Centre Formations found"
+      },
+      "created": "A new Centre Formation is created with identifier {{ param }}",
+      "updated": "A Centre Formation is updated with identifier {{ param }}",
+      "deleted": "A Centre Formation is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Centre Formation {{ id }}?"
+      },
+      "detail": {
+        "title": "Centre Formation"
+      },
+      "id": "ID",
+      "code": "Code",
+      "nom": "Nom",
+      "ville": "Ville",
+      "adresse": "Adresse",
+      "enteteDocument": "Entete Document",
+      "signataire": "Signataire",
+      "logoUrl": "Logo Url",
+      "nbCyclesCursus": "Nb Cycles Cursus",
+      "noteMaximale": "Note Maximale",
+      "actif": "Actif",
+      "pays": "Pays",
+      "bareme": "Bareme",
+      "parametre": "Parametre",
+      "cycle": "Cycle",
+      "habilitation": "Habilitation"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "forbidecBackendApp": {
+    "evenementEtudiant": {
+      "home": {
+        "title": "Evenement Etudiants",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Evenement Etudiant",
+        "createOrEditLabel": "Create or edit a Evenement Etudiant",
+        "notFound": "No Evenement Etudiants found"
+      },
+      "created": "A new Evenement Etudiant is created with identifier {{ param }}",
+      "updated": "A Evenement Etudiant is updated with identifier {{ param }}",
+      "deleted": "A Evenement Etudiant is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Evenement Etudiant {{ id }}?"
+      },
+      "detail": {
+        "title": "Evenement Etudiant"
+      },
+      "id": "ID",
+      "dateEvenement": "Date Evenement",
+      "intitule": "Intitule",
+      "commentaire": "Commentaire",
+      "etudiant": "Etudiant"
+    }
+  }
+}

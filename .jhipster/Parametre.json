@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000659"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Remplace tVariables. Sans centre rattaché, le paramètre est global.",
+  "fields": [
+    {
+      "fieldName": "cle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "80"
+    },
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "valeur",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    },
+    {
+      "fieldName": "typeValeur",
+      "fieldType": "TypeValeur",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "TEXTE,NOMBRE,DATE,BOOLEEN"
+    },
+    {
+      "fieldName": "modifiableUi",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Parametre",
+  "relationships": [
+    {
+      "otherEntityField": "code",
+      "otherEntityName": "centreFormation",
+      "otherEntityRelationshipName": "parametre",
+      "relationshipName": "centre",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

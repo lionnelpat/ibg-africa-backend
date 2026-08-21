@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (evenementEtudiant(); as evenementEtudiantRef) {
+      <div>
+        <h2 data-cy="evenementEtudiantDetailsHeading">
+          <span jhiTranslate="forbidecBackendApp.evenementEtudiant.detail.title">Evenement Etudiant</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ evenementEtudiantRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evenementEtudiant.dateEvenement">Date Evenement</span></dt>
+          <dd>
+            <span>{{ evenementEtudiantRef.dateEvenement | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evenementEtudiant.intitule">Intitule</span></dt>
+          <dd>
+            <span>{{ evenementEtudiantRef.intitule }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evenementEtudiant.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ evenementEtudiantRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.evenementEtudiant.etudiant">Etudiant</span></dt>
+          <dd>
+            @if (evenementEtudiant()!.etudiant) {
+              <div>
+                <a [routerLink]="['/etudiant', evenementEtudiant()!.etudiant?.id, 'view']">{{ evenementEtudiantRef.etudiant?.nom }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/evenement-etudiant', evenementEtudiantRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,33 @@
+{
+  "forbidecBackendApp": {
+    "baremeMention": {
+      "home": {
+        "title": "BaremeMentions",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Bareme Mention",
+        "createOrEditLabel": "Créer ou éditer un Bareme Mention",
+        "notFound": "Aucun Bareme Mention trouvé"
+      },
+      "created": "Un nouveau Bareme Mention a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Bareme Mention avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Bareme Mention avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Bareme Mention {{ id }} ?"
+      },
+      "detail": {
+        "title": "Bareme Mention"
+      },
+      "id": "ID",
+      "libelleLong": "Libelle Long",
+      "libelleCourt": "Libelle Court",
+      "borneMin": "Borne Min",
+      "minInclus": "Min Inclus",
+      "borneMax": "Borne Max",
+      "maxInclus": "Max Inclus",
+      "ordreAffichage": "Ordre Affichage",
+      "commentaire": "Commentaire",
+      "actif": "Actif",
+      "centre": "Centre"
+    }
+  }
+}

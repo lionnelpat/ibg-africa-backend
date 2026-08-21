@@ -1,0 +1,38 @@
+{
+  "forbidecBackendApp": {
+    "evaluationRealisee": {
+      "home": {
+        "title": "EvaluationRealisees",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Evaluation Realisee",
+        "createOrEditLabel": "Créer ou éditer un Evaluation Realisee",
+        "notFound": "Aucun Evaluation Realisee trouvé"
+      },
+      "created": "Un nouveau Evaluation Realisee a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Evaluation Realisee avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Evaluation Realisee avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Evaluation Realisee {{ id }} ?"
+      },
+      "detail": {
+        "title": "Evaluation Realisee"
+      },
+      "id": "ID",
+      "note": "Note",
+      "statut": "Statut",
+      "compteDansMoyenne": "Compte Dans Moyenne",
+      "dateDebut": "Date Debut",
+      "dateFin": "Date Fin",
+      "commentaire1": "Commentaire 1",
+      "commentaire2": "Commentaire 2",
+      "commentaire3": "Commentaire 3",
+      "saisiePar": "Saisie Par",
+      "saisieLe": "Saisie Le",
+      "valideePar": "Validee Par",
+      "valideeLe": "Validee Le",
+      "evaluationPrevue": "Evaluation Prevue",
+      "etudiant": "Etudiant",
+      "historique": "Historique"
+    }
+  }
+}

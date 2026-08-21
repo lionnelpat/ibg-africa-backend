@@ -1,0 +1,62 @@
+{
+  "annotations": {
+    "changelogDate": "20260821000559"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Journal des modifications de note. Absent d'Access, requis en multi-utilisateur.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "noteAvant",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "noteApres",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "statutAvant",
+      "fieldType": "StatutNote",
+      "fieldValues": "NON_SAISIE,SAISIE,ABSENT,DISPENSE,VALIDEE"
+    },
+    {
+      "fieldName": "statutApres",
+      "fieldType": "StatutNote",
+      "fieldValues": "NON_SAISIE,SAISIE,ABSENT,DISPENSE,VALIDEE"
+    },
+    {
+      "fieldName": "motif",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "modifiePar",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "64"
+    },
+    {
+      "fieldName": "modifieLe",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "HistoriqueNote",
+  "pagination": "infinite-scroll",
+  "readOnly": true,
+  "relationships": [
+    {
+      "otherEntityField": "statut",
+      "otherEntityName": "evaluationRealisee",
+      "otherEntityRelationshipName": "historique",
+      "relationshipName": "evaluationRealisee",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

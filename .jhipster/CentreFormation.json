@@ -1,0 +1,110 @@
+{
+  "annotations": {
+    "changelogDate": "20260820235259"
+  },
+  "applications": ["forbidec_backend"],
+  "documentation": "Centre de formation. Porte les blocs d'impression du bulletin\\n(en-tête, ville de signature, signataire) et les règles pédagogiques\\nlocales : nombre de cycles du cursus, note maximale.",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique", "maxlength"],
+      "fieldValidateRulesMaxlength": "20"
+    },
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "150"
+    },
+    {
+      "fieldName": "ville",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "adresse",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "enteteDocument",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "signataire",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "100"
+    },
+    {
+      "fieldName": "logoUrl",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    },
+    {
+      "fieldName": "nbCyclesCursus",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min", "max"],
+      "fieldValidateRulesMax": "20",
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "noteMaximale",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "CentreFormation",
+  "relationships": [
+    {
+      "otherEntityField": "nom",
+      "otherEntityName": "pays",
+      "otherEntityRelationshipName": "centre",
+      "relationshipName": "pays",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "baremeMention",
+      "otherEntityRelationshipName": "centre",
+      "relationshipName": "bareme",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "parametre",
+      "otherEntityRelationshipName": "centre",
+      "relationshipName": "parametre",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "cycle",
+      "otherEntityRelationshipName": "centre",
+      "relationshipName": "cycle",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "habilitationCycle",
+      "otherEntityRelationshipName": "centre",
+      "relationshipName": "habilitation",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (cycle(); as cycleRef) {
+      <div>
+        <h2 data-cy="cycleDetailsHeading"><span jhiTranslate="forbidecBackendApp.cycle.detail.title">Cycle</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ cycleRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.annee">Annee</span></dt>
+          <dd>
+            <span>{{ cycleRef.annee }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.libelle">Libelle</span></dt>
+          <dd>
+            <span>{{ cycleRef.libelle }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.dateDebut">Date Debut</span></dt>
+          <dd>
+            <span>{{ cycleRef.dateDebut | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.dateFin">Date Fin</span></dt>
+          <dd>
+            <span>{{ cycleRef.dateFin | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.cloture">Cloture</span></dt>
+          <dd>
+            <span>{{ cycleRef.cloture }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.commentaire">Commentaire</span></dt>
+          <dd>
+            <span>{{ cycleRef.commentaire }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.cycle.centre">Centre</span></dt>
+          <dd>
+            @if (cycle()!.centre) {
+              <div>
+                <a [routerLink]="['/centre-formation', cycle()!.centre?.id, 'view']">{{ cycleRef.centre?.code }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/cycle', cycleRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,11 @@
+export enum RoleFonctionnel {
+  ADMIN = 'ADMIN',
+
+  SCOLARITE = 'SCOLARITE',
+
+  ENSEIGNANT = 'ENSEIGNANT',
+
+  LECTEUR = 'LECTEUR',
+
+  ETUDIANT = 'ETUDIANT',
+}

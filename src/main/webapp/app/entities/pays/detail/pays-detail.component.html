@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (pays(); as paysRef) {
+      <div>
+        <h2 data-cy="paysDetailsHeading"><span jhiTranslate="forbidecBackendApp.pays.detail.title">Pays</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ paysRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.pays.codeIso">Code Iso</span></dt>
+          <dd>
+            <span>{{ paysRef.codeIso }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.pays.nom">Nom</span></dt>
+          <dd>
+            <span>{{ paysRef.nom }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.pays.langue">Langue</span></dt>
+          <dd>
+            <span>{{ paysRef.langue }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.pays.fuseau">Fuseau</span></dt>
+          <dd>
+            <span>{{ paysRef.fuseau }}</span>
+          </dd>
+          <dt><span jhiTranslate="forbidecBackendApp.pays.actif">Actif</span></dt>
+          <dd>
+            <span>{{ paysRef.actif }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/pays', paysRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

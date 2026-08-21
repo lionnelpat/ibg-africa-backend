@@ -1,0 +1,43 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "oauth2",
+    "baseName": "forbidec_backend",
+    "buildTool": "maven",
+    "cacheProvider": "ehcache",
+    "clientFramework": "angular",
+    "creationTimestamp": 1787271314628,
+    "devDatabaseType": "mysql",
+    "enableHibernateCache": true,
+    "enableTranslation": true,
+    "entities": [
+      "Pays",
+      "CentreFormation",
+      "Matiere",
+      "SousMatiere",
+      "Cours",
+      "TypeTache",
+      "BaremeMention",
+      "Enseignant",
+      "Etudiant",
+      "Cycle",
+      "InscriptionCycle",
+      "EvenementEtudiant",
+      "EvaluationPrevue",
+      "EvaluationRealisee",
+      "HistoriqueNote",
+      "Parametre",
+      "HabilitationCycle"
+    ],
+    "jhipsterVersion": "8.11.0",
+    "languages": ["fr", "en"],
+    "lastLiquibaseTimestamp": 1787270879000,
+    "nativeLanguage": "fr",
+    "packageName": "org.forbidec",
+    "prodDatabaseType": "mysql",
+    "serverPort": "8080",
+    "skipCommitHook": true,
+    "skipUserManagement": true,
+    "testFrameworks": ["cypress"]
+  }
+}
