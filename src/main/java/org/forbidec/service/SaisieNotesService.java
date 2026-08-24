@@ -1,5 +1,6 @@
 package org.forbidec.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -122,6 +123,7 @@ public class SaisieNotesService {
         if (ep.getCycle() != null) {
             dto.setCycleId(ep.getCycle().getId());
             dto.setCycleAnnee(ep.getCycle().getAnnee());
+            dto.setCycleCloture(ep.getCycle().getCloture());
         }
         dto.setLignes(lignes);
         return dto;
@@ -138,6 +140,10 @@ public class SaisieNotesService {
         EvaluationPrevue ep = evaluationPrevueRepository
             .findOneWithEagerRelationships(evaluationPrevueId)
             .orElseThrow(() -> new BadRequestAlertException("Matière planifiée introuvable", "evaluationPrevue", "idnotfound"));
+
+        if (Boolean.TRUE.equals(ep.getCycle().getCloture())) {
+            throw new BadRequestAlertException("Le cycle est clôturé : la saisie des notes n'est plus possible.", "evaluationPrevue", "cyclecloture");
+        }
 
         Set<Long> inscritIds = cycleDetailQueryRepository
             .findInscriptionsForCycle(ep.getCycle().getId())
@@ -272,5 +278,46 @@ public class SaisieNotesService {
         toutesErreurs.addAll(result.getErreurs());
         result.setErreurs(toutesErreurs);
         return result;
+    }
+
+    /**
+     * Modèle Excel vierge pour la saisie hors-ligne : une ligne d'en-tête
+     * (Matricule, Nom Prénom, Note) puis une ligne par étudiant inscrit au
+     * cycle de la matière, prête à être complétée par l'enseignant et
+     * réimportée via {@link #importerExcel}.
+     */
+    @Transactional(readOnly = true)
+    public byte[] genererTemplateExcel(Long evaluationPrevueId) {
+        EvaluationPrevue ep = evaluationPrevueRepository
+            .findOneWithEagerRelationships(evaluationPrevueId)
+            .orElseThrow(() -> new BadRequestAlertException("Matière planifiée introuvable", "evaluationPrevue", "idnotfound"));
+
+        List<InscriptionCycle> inscriptions = cycleDetailQueryRepository.findInscriptionsForCycle(ep.getCycle().getId());
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Notes");
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("Matricule");
+            header.createCell(1).setCellValue("Nom Prénom");
+            header.createCell(2).setCellValue("Note");
+
+            int numeroLigne = 1;
+            for (InscriptionCycle inscription : inscriptions) {
+                Etudiant etudiant = inscription.getEtudiant();
+                if (etudiant == null) {
+                    continue;
+                }
+                Row row = sheet.createRow(numeroLigne++);
+                row.createCell(0).setCellValue(etudiant.getMatricule() != null ? etudiant.getMatricule() : "");
+                row.createCell(1).setCellValue(etudiant.getNom() + " " + etudiant.getPrenom());
+                row.createCell(2);
+            }
+
+            ByteArrayOutputStream sortie = new ByteArrayOutputStream();
+            workbook.write(sortie);
+            return sortie.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalStateException("Erreur lors de la génération du modèle Excel", e);
+        }
     }
 }

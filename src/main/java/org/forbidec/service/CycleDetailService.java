@@ -2,6 +2,7 @@ package org.forbidec.service;
 
 import java.util.List;
 import org.forbidec.domain.Cycle;
+import org.forbidec.domain.Etudiant;
 import org.forbidec.domain.EvaluationPrevue;
 import org.forbidec.domain.InscriptionCycle;
 import org.forbidec.repository.CycleRepository;
@@ -89,10 +90,11 @@ public class CycleDetailService {
         dto.setEtudiants(
             inscriptions
                 .stream()
-                .map(InscriptionCycle::getEtudiant)
-                .filter(java.util.Objects::nonNull)
-                .map(etudiant -> {
+                .filter(ic -> ic.getEtudiant() != null)
+                .map(ic -> {
+                    Etudiant etudiant = ic.getEtudiant();
                     EtudiantResumeDTO e = new EtudiantResumeDTO();
+                    e.setInscriptionCycleId(ic.getId());
                     e.setId(etudiant.getId());
                     e.setMatricule(etudiant.getMatricule());
                     e.setNom(etudiant.getNom());

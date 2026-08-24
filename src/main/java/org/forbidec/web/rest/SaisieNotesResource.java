@@ -7,6 +7,9 @@ import org.forbidec.service.dto.saisie.SaisieNoteRequestDTO;
 import org.forbidec.service.dto.saisie.SaisieResultDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,5 +51,16 @@ public class SaisieNotesResource {
     public SaisieResultDTO importer(@PathVariable("id") Long id, @RequestParam("fichier") MultipartFile fichier) {
         LOG.debug("REST request to import an Excel file of notes for EvaluationPrevue : {}", id);
         return saisieNotesService.importerExcel(id, fichier);
+    }
+
+    @GetMapping("/evaluation-prevues/{id}/saisie/template")
+    public ResponseEntity<byte[]> getTemplate(@PathVariable("id") Long id) {
+        LOG.debug("REST request to get the notes import template for EvaluationPrevue : {}", id);
+        byte[] xlsx = saisieNotesService.genererTemplateExcel(id);
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"modele-notes-" + id + ".xlsx\"")
+            .body(xlsx);
     }
 }

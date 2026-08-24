@@ -14,6 +14,7 @@ public class SaisieMatiereDTO implements Serializable {
     private BigDecimal noteMaximale;
     private Long cycleId;
     private Integer cycleAnnee;
+    private Boolean cycleCloture;
     private List<SaisieLigneDTO> lignes;
 
     public Long getEvaluationPrevueId() {
@@ -70,6 +71,14 @@ public class SaisieMatiereDTO implements Serializable {
 
     public void setCycleAnnee(Integer cycleAnnee) {
         this.cycleAnnee = cycleAnnee;
+    }
+
+    public Boolean getCycleCloture() {
+        return cycleCloture;
+    }
+
+    public void setCycleCloture(Boolean cycleCloture) {
+        this.cycleCloture = cycleCloture;
     }
 
     public List<SaisieLigneDTO> getLignes() {

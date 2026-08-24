@@ -8,10 +8,19 @@ import java.io.Serializable;
 public class EtudiantResumeDTO implements Serializable {
 
     private Long id;
+    private Long inscriptionCycleId;
     private String matricule;
     private String nom;
     private String prenom;
     private Boolean actif;
+
+    public Long getInscriptionCycleId() {
+        return inscriptionCycleId;
+    }
+
+    public void setInscriptionCycleId(Long inscriptionCycleId) {
+        this.inscriptionCycleId = inscriptionCycleId;
+    }
 
     public Long getId() {
         return id;
