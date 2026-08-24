@@ -20,9 +20,9 @@ public interface DashboardQueryRepository extends JpaRepository<Etudiant, Long> 
     long countFinissants();
 
     @Query(
-        "select e.anneeEntree as annee, count(e) as nombre from Etudiant e where e.anneeEntree is not null group by e.anneeEntree order by e.anneeEntree"
+        "select c.annee as annee, count(ic) as nombre from InscriptionCycle ic join ic.cycle c group by c.annee order by c.annee"
     )
-    List<AnneeCountProjection> countEtudiantsByAnneeEntree();
+    List<AnneeCountProjection> countInscriptionsByCycleAnnee();
 
     @Query(
         """

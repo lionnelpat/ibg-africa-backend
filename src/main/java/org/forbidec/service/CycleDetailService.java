@@ -64,6 +64,7 @@ public class CycleDetailService {
                 .stream()
                 .map(ep -> {
                     MatiereDispenseeDTO m = new MatiereDispenseeDTO();
+                    m.setEvaluationPrevueId(ep.getId());
                     if (ep.getCours() != null) {
                         m.setCoursId(ep.getCours().getId());
                         m.setCoursIntitule(ep.getCours().getIntitule());

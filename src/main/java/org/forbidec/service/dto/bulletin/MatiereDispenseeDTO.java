@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class MatiereDispenseeDTO implements Serializable {
 
+    private Long evaluationPrevueId;
     private Long coursId;
     private String coursIntitule;
     private String matiereIntitule;
@@ -14,6 +15,14 @@ public class MatiereDispenseeDTO implements Serializable {
     private Long enseignantId;
     private String enseignantNom;
     private String enseignantPrenom;
+
+    public Long getEvaluationPrevueId() {
+        return evaluationPrevueId;
+    }
+
+    public void setEvaluationPrevueId(Long evaluationPrevueId) {
+        this.evaluationPrevueId = evaluationPrevueId;
+    }
 
     public Long getCoursId() {
         return coursId;

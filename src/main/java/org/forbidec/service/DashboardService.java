@@ -75,7 +75,7 @@ public class DashboardService {
 
         dto.setEvolutionInscriptions(
             dashboardQueryRepository
-                .countEtudiantsByAnneeEntree()
+                .countInscriptionsByCycleAnnee()
                 .stream()
                 .map((AnneeCountProjection p) -> new EvolutionAnneeDTO(p.getAnnee(), p.getNombre()))
                 .toList()
