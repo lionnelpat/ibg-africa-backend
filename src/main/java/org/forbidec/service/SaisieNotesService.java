@@ -1,11 +1,23 @@
 package org.forbidec.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.forbidec.domain.Etudiant;
 import org.forbidec.domain.EvaluationPrevue;
 import org.forbidec.domain.EvaluationRealisee;
@@ -28,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Grille de saisie des notes : un étudiant inscrit au cycle par ligne, une
@@ -126,12 +139,12 @@ public class SaisieNotesService {
             .findOneWithEagerRelationships(evaluationPrevueId)
             .orElseThrow(() -> new BadRequestAlertException("Matière planifiée introuvable", "evaluationPrevue", "idnotfound"));
 
-        java.util.Set<Long> inscritIds = cycleDetailQueryRepository
+        Set<Long> inscritIds = cycleDetailQueryRepository
             .findInscriptionsForCycle(ep.getCycle().getId())
             .stream()
             .filter(ic -> ic.getEtudiant() != null)
             .map(ic -> ic.getEtudiant().getId())
-            .collect(java.util.stream.Collectors.toSet());
+            .collect(Collectors.toSet());
 
         String utilisateur = SecurityUtils.getCurrentUserLogin().orElse("system");
         List<String> erreurs = new ArrayList<>();
@@ -192,6 +205,72 @@ public class SaisieNotesService {
         SaisieResultDTO result = new SaisieResultDTO();
         result.setEnregistrees(enregistrees);
         result.setErreurs(erreurs);
+        return result;
+    }
+
+    /**
+     * Saisie en masse depuis un fichier Excel : une ligne d'en-tête ignorée,
+     * puis colonne A = matricule, colonne B = note. Les matricules inconnus
+     * ou les notes non numériques sont rapportés en erreur sans bloquer le
+     * reste du fichier ; les lignes valides passent ensuite par le même
+     * {@link #enregistrer} que la saisie manuelle (donc le même contrôle
+     * d'inscription au cycle, et la même traçabilité HistoriqueNote).
+     */
+    public SaisieResultDTO importerExcel(Long evaluationPrevueId, MultipartFile fichier) {
+        List<String> erreursImport = new ArrayList<>();
+        List<SaisieNoteRequestDTO> demandes = new ArrayList<>();
+        DataFormatter formatter = new DataFormatter();
+
+        try (InputStream in = fichier.getInputStream(); Workbook workbook = new XSSFWorkbook(in)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                int numeroLigne = row.getRowNum() + 1;
+                if (row.getRowNum() == 0) {
+                    // en-tête
+                    continue;
+                }
+                Cell celluleMatricule = row.getCell(0);
+                Cell celluleNote = row.getCell(1);
+                String matricule = celluleMatricule != null ? formatter.formatCellValue(celluleMatricule).trim() : "";
+                String noteTexte = celluleNote != null ? formatter.formatCellValue(celluleNote).trim() : "";
+                if (matricule.isEmpty() && noteTexte.isEmpty()) {
+                    continue;
+                }
+                if (matricule.isEmpty()) {
+                    erreursImport.add("Ligne " + numeroLigne + " : matricule manquant, ignorée");
+                    continue;
+                }
+
+                Optional<Etudiant> etudiant = saisieQueryRepository.findEtudiantByMatricule(matricule);
+                if (etudiant.isEmpty()) {
+                    erreursImport.add("Ligne " + numeroLigne + " : matricule '" + matricule + "' introuvable");
+                    continue;
+                }
+
+                BigDecimal note = null;
+                if (!noteTexte.isEmpty()) {
+                    try {
+                        note = new BigDecimal(noteTexte.replace(',', '.'));
+                    } catch (NumberFormatException e) {
+                        erreursImport.add("Ligne " + numeroLigne + " : note '" + noteTexte + "' invalide, ignorée");
+                        continue;
+                    }
+                }
+
+                SaisieNoteRequestDTO demande = new SaisieNoteRequestDTO();
+                demande.setEtudiantId(etudiant.get().getId());
+                demande.setNote(note);
+                demande.setStatut(note != null ? StatutNote.SAISIE : StatutNote.NON_SAISIE);
+                demandes.add(demande);
+            }
+        } catch (IOException e) {
+            throw new BadRequestAlertException("Fichier illisible : " + e.getMessage(), "evaluationRealisee", "fichierillisible");
+        }
+
+        SaisieResultDTO result = enregistrer(evaluationPrevueId, demandes);
+        List<String> toutesErreurs = new ArrayList<>(erreursImport);
+        toutesErreurs.addAll(result.getErreurs());
+        result.setErreurs(toutesErreurs);
         return result;
     }
 }

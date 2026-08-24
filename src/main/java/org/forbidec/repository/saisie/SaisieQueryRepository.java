@@ -1,6 +1,8 @@
 package org.forbidec.repository.saisie;
 
 import java.util.List;
+import java.util.Optional;
+import org.forbidec.domain.Etudiant;
 import org.forbidec.domain.EvaluationRealisee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +20,8 @@ public interface SaisieQueryRepository extends JpaRepository<EvaluationRealisee,
     List<EvaluationRealisee> findByEvaluationPrevueId(@Param("evaluationPrevueId") Long evaluationPrevueId);
 
     @Query("select er from EvaluationRealisee er where er.evaluationPrevue.id = :evaluationPrevueId and er.etudiant.id = :etudiantId")
-    java.util.Optional<EvaluationRealisee> findOne(@Param("evaluationPrevueId") Long evaluationPrevueId, @Param("etudiantId") Long etudiantId);
+    Optional<EvaluationRealisee> findOne(@Param("evaluationPrevueId") Long evaluationPrevueId, @Param("etudiantId") Long etudiantId);
+
+    @Query("select e from Etudiant e where e.matricule = :matricule")
+    Optional<Etudiant> findEtudiantByMatricule(@Param("matricule") String matricule);
 }
