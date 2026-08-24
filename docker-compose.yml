@@ -1,0 +1,124 @@
+name: ibgafrica
+
+# Production stack for Dokploy: mysql, adminer, keycloak, backend, frontend.
+# Domains are mapped to each service from the Dokploy UI (see DEPLOY.md) —
+# this file intentionally carries no Traefik labels, since Dokploy manages
+# its own reverse proxy per service/port once a domain is attached.
+#
+# Required environment variables (set them in Dokploy, or in a local .env
+# for a first smoke test — see .env.example):
+#   MYSQL_ROOT_PASSWORD
+#   KEYCLOAK_ADMIN_PASSWORD
+#   CLIENT_SECRET_WEB_APP   (must match src/main/docker/realm-config-prod/jhipster-realm.json)
+
+services:
+  mysql:
+    image: mysql:9.2.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: forbidec_backend
+    command: mysqld --lower_case_table_names=1 --skip-mysqlx --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./src/main/docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h localhost -uroot -p"$$MYSQL_ROOT_PASSWORD"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ibgafrica
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ibgafrica
+    # Dokploy domain: adminer-ibgafrica.forbidec.org -> port 8080
+    ports:
+      - '8081:8080'
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.3
+    restart: unless-stopped
+    command: 'start --import-realm'
+    environment:
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HOSTNAME: https://keycloak-ibgafrica.forbidec.org
+      KC_HTTP_ENABLED: 'true'
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: 'true'
+      CLIENT_SECRET_WEB_APP: ${CLIENT_SECRET_WEB_APP}
+    volumes:
+      - ./src/main/docker/realm-config-prod:/opt/keycloak/data/import:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/9000 && echo -e "GET /health/ready HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q "UP"']
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ibgafrica
+    # Dokploy domain: keycloak-ibgafrica.forbidec.org -> port 8080
+    ports:
+      - '9080:8080'
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/forbidec_backend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SPRING_LIQUIBASE_URL: jdbc:mysql://mysql:3306/forbidec_backend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI: https://keycloak-ibgafrica.forbidec.org/realms/jhipster
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_ID: web_app
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_SECRET: ${CLIENT_SECRET_WEB_APP}
+      JAVA_OPTS: '-Xmx512m -Xms256m'
+    depends_on:
+      mysql:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      - ibgafrica
+    # Dokploy domain: api-ibgafrica.forbidec.org -> port 8080
+    ports:
+      - '8080:8080'
+
+  frontend:
+    build:
+      context: https://github.com/lionnelpat/ibg-africa-frontend.git
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - ibgafrica
+    # Dokploy domain: ibgafrica.forbidec.org -> port 80
+    ports:
+      - '8082:80'
+
+networks:
+  ibgafrica:
+    driver: bridge
+
+volumes:
+  mysql-data:

@@ -72,6 +72,10 @@ spring:
 server:
   port: 8080
   shutdown: graceful # see https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-graceful-shutdown
+  # Behind the frontend's nginx proxy and Dokploy's Traefik (both terminate
+  # TLS and forward plain HTTP), so Spring must trust X-Forwarded-* headers
+  # to build correct https:// OAuth2 redirect URIs and mark cookies Secure.
+  forward-headers-strategy: framework
   compression:
     enabled: true
     mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json,image/svg+xml

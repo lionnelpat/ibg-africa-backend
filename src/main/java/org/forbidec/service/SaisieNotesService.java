@@ -247,8 +247,8 @@ public class SaisieNotesService {
                     continue;
                 }
 
-                Optional<Etudiant> etudiant = saisieQueryRepository.findEtudiantByMatricule(matricule);
-                if (etudiant.isEmpty()) {
+                Etudiant etudiant = saisieQueryRepository.findEtudiantByMatricule(matricule).orElse(null);
+                if (etudiant == null) {
                     erreursImport.add("Ligne " + numeroLigne + " : matricule '" + matricule + "' introuvable");
                     continue;
                 }
@@ -264,7 +264,7 @@ public class SaisieNotesService {
                 }
 
                 SaisieNoteRequestDTO demande = new SaisieNoteRequestDTO();
-                demande.setEtudiantId(etudiant.get().getId());
+                demande.setEtudiantId(etudiant.getId());
                 demande.setNote(note);
                 demande.setStatut(note != null ? StatutNote.SAISIE : StatutNote.NON_SAISIE);
                 demandes.add(demande);
