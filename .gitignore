@@ -1,4 +1,9 @@
 ######################
+# Données réelles (PII étudiants) — jamais dans git
+######################
+/seed-data/
+
+######################
 # Node
 ######################
 /node/
