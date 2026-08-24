@@ -20,6 +20,8 @@ import org.forbidec.repository.bulletin.BulletinQueryRepository;
 import org.forbidec.repository.bulletin.EvaluationLigneProjection;
 import org.forbidec.service.dto.bulletin.BulletinDTO;
 import org.forbidec.service.dto.bulletin.BulletinLigneDTO;
+import org.forbidec.service.mention.Mention;
+import org.forbidec.service.mention.MentionResolver;
 import org.forbidec.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,17 +45,20 @@ public class BulletinService {
     private final EtudiantRepository etudiantRepository;
     private final CycleRepository cycleRepository;
     private final BaremeMentionRepository baremeMentionRepository;
+    private final MentionResolver mentionResolver;
 
     public BulletinService(
         BulletinQueryRepository bulletinQueryRepository,
         EtudiantRepository etudiantRepository,
         CycleRepository cycleRepository,
-        BaremeMentionRepository baremeMentionRepository
+        BaremeMentionRepository baremeMentionRepository,
+        MentionResolver mentionResolver
     ) {
         this.bulletinQueryRepository = bulletinQueryRepository;
         this.etudiantRepository = etudiantRepository;
         this.cycleRepository = cycleRepository;
         this.baremeMentionRepository = baremeMentionRepository;
+        this.mentionResolver = mentionResolver;
     }
 
     public BulletinDTO getBulletin(Long etudiantId) {
@@ -89,7 +94,10 @@ public class BulletinService {
             .map(GroupKey::cycleId)
             .orElse(null);
 
-        List<BaremeMention> baremes = resolveBaremes(dernierCycleId);
+        Long centreId = dernierCycleId == null
+            ? null
+            : cycleRepository.findById(dernierCycleId).map(Cycle::getCentre).map(CentreFormation::getId).orElse(null);
+        List<BaremeMention> baremes = mentionResolver.selectApplicable(baremeMentionRepository.findAll(), centreId);
 
         record LigneCalculee(GroupKey key, BigDecimal moyenneCours) {}
 
@@ -108,7 +116,7 @@ public class BulletinService {
             ligne.setCycleAnnee(calculee.key().cycleAnnee());
             ligne.setCoursIntitule(calculee.key().coursIntitule());
             ligne.setMoyenneCours(calculee.moyenneCours());
-            Mention mention = resolveMention(baremes, calculee.moyenneCours());
+            Mention mention = mentionResolver.resolve(baremes, calculee.moyenneCours());
             ligne.setMentionLongue(mention.longue());
             ligne.setMentionCourte(mention.courte());
             lignes.add(ligne);
@@ -130,7 +138,7 @@ public class BulletinService {
         if (!groupes.isEmpty()) {
             BigDecimal moyenneGenerale = sommeMoyennes.divide(BigDecimal.valueOf(groupes.size()), 2, RoundingMode.HALF_UP);
             dto.setMoyenneGenerale(moyenneGenerale);
-            Mention mentionGenerale = resolveMention(baremes, moyenneGenerale);
+            Mention mentionGenerale = mentionResolver.resolve(baremes, moyenneGenerale);
             dto.setMentionGeneraleLongue(mentionGenerale.longue());
             dto.setMentionGeneraleCourte(mentionGenerale.courte());
         }
@@ -151,44 +159,5 @@ public class BulletinService {
         dto.setCentreVille(centre.getVille());
         dto.setCentreSignataire(centre.getSignataire());
         dto.setCentreEnteteDocument(centre.getEnteteDocument());
-    }
-
-    private List<BaremeMention> resolveBaremes(Long cycleId) {
-        Long centreId = cycleId == null ? null : cycleRepository.findById(cycleId).map(Cycle::getCentre).map(CentreFormation::getId).orElse(null);
-
-        List<BaremeMention> all = baremeMentionRepository
-            .findAll()
-            .stream()
-            .filter(BaremeMention::getActif)
-            .sorted(Comparator.comparing(BaremeMention::getOrdreAffichage))
-            .toList();
-
-        if (centreId != null) {
-            List<BaremeMention> specifiques = all
-                .stream()
-                .filter(b -> b.getCentre() != null && centreId.equals(b.getCentre().getId()))
-                .toList();
-            if (!specifiques.isEmpty()) {
-                return specifiques;
-            }
-        }
-        return all.stream().filter(b -> b.getCentre() == null).toList();
-    }
-
-    private record Mention(String longue, String courte) {}
-
-    private Mention resolveMention(List<BaremeMention> baremes, BigDecimal note) {
-        for (BaremeMention bareme : baremes) {
-            boolean minOk =
-                bareme.getBorneMin() == null ||
-                (Boolean.TRUE.equals(bareme.getMinInclus()) ? note.compareTo(bareme.getBorneMin()) >= 0 : note.compareTo(bareme.getBorneMin()) > 0);
-            boolean maxOk =
-                bareme.getBorneMax() == null ||
-                (Boolean.TRUE.equals(bareme.getMaxInclus()) ? note.compareTo(bareme.getBorneMax()) <= 0 : note.compareTo(bareme.getBorneMax()) < 0);
-            if (minOk && maxOk) {
-                return new Mention(bareme.getLibelleLong(), bareme.getLibelleCourt());
-            }
-        }
-        return new Mention(null, null);
     }
 }
