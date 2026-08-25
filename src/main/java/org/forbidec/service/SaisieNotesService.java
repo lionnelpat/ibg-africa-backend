@@ -216,8 +216,9 @@ public class SaisieNotesService {
 
     /**
      * Saisie en masse depuis un fichier Excel : une ligne d'en-tête ignorée,
-     * puis colonne A = matricule, colonne B = note. Les matricules inconnus
-     * ou les notes non numériques sont rapportés en erreur sans bloquer le
+     * puis colonne A = matricule, colonne B = nom prénom (informatif,
+     * non exploité), colonne C = note. Les matricules inconnus ou les
+     * notes non numériques sont rapportés en erreur sans bloquer le
      * reste du fichier ; les lignes valides passent ensuite par le même
      * {@link #enregistrer} que la saisie manuelle (donc le même contrôle
      * d'inscription au cycle, et la même traçabilité HistoriqueNote).
@@ -236,7 +237,7 @@ public class SaisieNotesService {
                     continue;
                 }
                 Cell celluleMatricule = row.getCell(0);
-                Cell celluleNote = row.getCell(1);
+                Cell celluleNote = row.getCell(2);
                 String matricule = celluleMatricule != null ? formatter.formatCellValue(celluleMatricule).trim() : "";
                 String noteTexte = celluleNote != null ? formatter.formatCellValue(celluleNote).trim() : "";
                 if (matricule.isEmpty() && noteTexte.isEmpty()) {
