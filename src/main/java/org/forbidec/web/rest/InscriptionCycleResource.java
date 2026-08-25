@@ -76,14 +76,7 @@ public class InscriptionCycleResource {
         if (inscriptionCycleDTO.getId() != null) {
             throw new BadRequestAlertException("A new inscriptionCycle cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        if (inscriptionCycleDTO.getCycle() != null && inscriptionCycleDTO.getCycle().getId() != null) {
-            Cycle cycle = cycleRepository
-                .findById(inscriptionCycleDTO.getCycle().getId())
-                .orElseThrow(() -> new BadRequestAlertException("Cycle introuvable", "cycle", "idnotfound"));
-            if (Boolean.TRUE.equals(cycle.getCloture())) {
-                throw new BadRequestAlertException("Le cycle est clôturé : impossible d'y inscrire un étudiant.", ENTITY_NAME, "cyclecloture");
-            }
-        }
+        verifierCycleNonCloture(inscriptionCycleDTO);
         inscriptionCycleDTO = inscriptionCycleService.save(inscriptionCycleDTO);
         return ResponseEntity.created(new URI("/api/inscription-cycles/" + inscriptionCycleDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, inscriptionCycleDTO.getId().toString()))
@@ -116,6 +109,7 @@ public class InscriptionCycleResource {
         if (!inscriptionCycleRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        verifierCycleNonCloture(inscriptionCycleDTO);
 
         inscriptionCycleDTO = inscriptionCycleService.update(inscriptionCycleDTO);
         return ResponseEntity.ok()
@@ -150,6 +144,7 @@ public class InscriptionCycleResource {
         if (!inscriptionCycleRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        verifierCycleNonCloture(inscriptionCycleDTO);
 
         Optional<InscriptionCycleDTO> result = inscriptionCycleService.partialUpdate(inscriptionCycleDTO);
 
@@ -201,6 +196,24 @@ public class InscriptionCycleResource {
         LOG.debug("REST request to get InscriptionCycle : {}", id);
         Optional<InscriptionCycleDTO> inscriptionCycleDTO = inscriptionCycleService.findOne(id);
         return ResponseUtil.wrapOrNotFound(inscriptionCycleDTO);
+    }
+
+    /**
+     * Rejette toute création, modification ou déplacement d'une inscription
+     * vers un cycle clôturé — vérifié sur les trois points d'entrée
+     * mutants (POST, PUT, PATCH) pour ne pas pouvoir être contourné en
+     * ciblant un cycle clôturé après coup via une mise à jour.
+     */
+    private void verifierCycleNonCloture(InscriptionCycleDTO inscriptionCycleDTO) {
+        if (inscriptionCycleDTO.getCycle() == null || inscriptionCycleDTO.getCycle().getId() == null) {
+            return;
+        }
+        Cycle cycle = cycleRepository
+            .findById(inscriptionCycleDTO.getCycle().getId())
+            .orElseThrow(() -> new BadRequestAlertException("Cycle introuvable", "cycle", "idnotfound"));
+        if (Boolean.TRUE.equals(cycle.getCloture())) {
+            throw new BadRequestAlertException("Le cycle est clôturé : impossible d'y inscrire un étudiant.", ENTITY_NAME, "cyclecloture");
+        }
     }
 
     /**

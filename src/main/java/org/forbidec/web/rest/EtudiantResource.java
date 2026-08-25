@@ -13,6 +13,7 @@ import org.forbidec.service.EtudiantService;
 import org.forbidec.service.criteria.EtudiantCriteria;
 import org.forbidec.service.dto.EtudiantDTO;
 import org.forbidec.web.rest.errors.BadRequestAlertException;
+import org.forbidec.web.rest.util.PhotoValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +70,7 @@ public class EtudiantResource {
         if (etudiantDTO.getId() != null) {
             throw new BadRequestAlertException("A new etudiant cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        PhotoValidator.verifier(etudiantDTO.getPhoto(), etudiantDTO.getPhotoContentType(), ENTITY_NAME);
         etudiantDTO = etudiantService.save(etudiantDTO);
         return ResponseEntity.created(new URI("/api/etudiants/" + etudiantDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, etudiantDTO.getId().toString()))
@@ -101,6 +103,7 @@ public class EtudiantResource {
         if (!etudiantRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        PhotoValidator.verifier(etudiantDTO.getPhoto(), etudiantDTO.getPhotoContentType(), ENTITY_NAME);
 
         etudiantDTO = etudiantService.update(etudiantDTO);
         return ResponseEntity.ok()
@@ -135,6 +138,7 @@ public class EtudiantResource {
         if (!etudiantRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        PhotoValidator.verifier(etudiantDTO.getPhoto(), etudiantDTO.getPhotoContentType(), ENTITY_NAME);
 
         Optional<EtudiantDTO> result = etudiantService.partialUpdate(etudiantDTO);
 
