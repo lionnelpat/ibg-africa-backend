@@ -1,49 +1,26 @@
-package org.forbidec.service.dto;
+package org.forbidec.service.dto.enseignant;
 
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 
 /**
- * A DTO for the {@link org.forbidec.domain.Enseignant} entity.
+ * Fiche détail d'un enseignant : identité + les matières dispensées,
+ * groupées par cycle.
  */
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class EnseignantDTO implements Serializable {
+public class EnseignantDetailDTO implements Serializable {
 
     private Long id;
-
-    @NotNull
-    @Size(max = 80)
     private String nom;
-
-    @NotNull
-    @Size(max = 80)
     private String prenom;
-
-    @Size(max = 100)
     private String libelleLong;
-
-    @Size(max = 50)
     private String libelleCourt;
-
-    @Size(max = 150)
     private String email;
-
-    @Size(max = 30)
     private String telephone;
-
-    @Size(max = 64)
-    private String keycloakUserId;
-
-    @Size(max = 255)
     private String commentaire;
-
-    @NotNull
     private Boolean actif;
-
     private byte[] photo;
-
     private String photoContentType;
+    private List<CycleEnseignementDTO> coursParCycle;
 
     public Long getId() {
         return id;
@@ -101,14 +78,6 @@ public class EnseignantDTO implements Serializable {
         this.telephone = telephone;
     }
 
-    public String getKeycloakUserId() {
-        return keycloakUserId;
-    }
-
-    public void setKeycloakUserId(String keycloakUserId) {
-        this.keycloakUserId = keycloakUserId;
-    }
-
     public String getCommentaire() {
         return commentaire;
     }
@@ -141,41 +110,11 @@ public class EnseignantDTO implements Serializable {
         this.photoContentType = photoContentType;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof EnseignantDTO)) {
-            return false;
-        }
-
-        EnseignantDTO enseignantDTO = (EnseignantDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, enseignantDTO.id);
+    public List<CycleEnseignementDTO> getCoursParCycle() {
+        return coursParCycle;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "EnseignantDTO{" +
-            "id=" + getId() +
-            ", nom='" + getNom() + "'" +
-            ", prenom='" + getPrenom() + "'" +
-            ", libelleLong='" + getLibelleLong() + "'" +
-            ", libelleCourt='" + getLibelleCourt() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", telephone='" + getTelephone() + "'" +
-            ", keycloakUserId='" + getKeycloakUserId() + "'" +
-            ", commentaire='" + getCommentaire() + "'" +
-            ", actif='" + getActif() + "'" +
-            "}";
+    public void setCoursParCycle(List<CycleEnseignementDTO> coursParCycle) {
+        this.coursParCycle = coursParCycle;
     }
 }

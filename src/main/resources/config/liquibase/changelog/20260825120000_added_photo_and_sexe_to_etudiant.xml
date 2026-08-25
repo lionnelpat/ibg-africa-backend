@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <property name="blobType" value="longblob" dbms="mysql"/>
+
+    <changeSet id="20260825120000-1" author="forbidec">
+        <addColumn tableName="etudiant">
+            <column name="sexe" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="photo" type="${blobType}">
+                <constraints nullable="true"/>
+            </column>
+            <column name="photo_content_type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

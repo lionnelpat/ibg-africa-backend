@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.forbidec.domain.Cycle;
+import org.forbidec.repository.CycleRepository;
 import org.forbidec.repository.InscriptionCycleRepository;
 import org.forbidec.service.InscriptionCycleQueryService;
 import org.forbidec.service.InscriptionCycleService;
@@ -46,11 +48,15 @@ public class InscriptionCycleResource {
 
     private final InscriptionCycleQueryService inscriptionCycleQueryService;
 
+    private final CycleRepository cycleRepository;
+
     public InscriptionCycleResource(
         InscriptionCycleService inscriptionCycleService,
         InscriptionCycleRepository inscriptionCycleRepository,
-        InscriptionCycleQueryService inscriptionCycleQueryService
+        InscriptionCycleQueryService inscriptionCycleQueryService,
+        CycleRepository cycleRepository
     ) {
+        this.cycleRepository = cycleRepository;
         this.inscriptionCycleService = inscriptionCycleService;
         this.inscriptionCycleRepository = inscriptionCycleRepository;
         this.inscriptionCycleQueryService = inscriptionCycleQueryService;
@@ -69,6 +75,14 @@ public class InscriptionCycleResource {
         LOG.debug("REST request to save InscriptionCycle : {}", inscriptionCycleDTO);
         if (inscriptionCycleDTO.getId() != null) {
             throw new BadRequestAlertException("A new inscriptionCycle cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        if (inscriptionCycleDTO.getCycle() != null && inscriptionCycleDTO.getCycle().getId() != null) {
+            Cycle cycle = cycleRepository
+                .findById(inscriptionCycleDTO.getCycle().getId())
+                .orElseThrow(() -> new BadRequestAlertException("Cycle introuvable", "cycle", "idnotfound"));
+            if (Boolean.TRUE.equals(cycle.getCloture())) {
+                throw new BadRequestAlertException("Le cycle est clôturé : impossible d'y inscrire un étudiant.", ENTITY_NAME, "cyclecloture");
+            }
         }
         inscriptionCycleDTO = inscriptionCycleService.save(inscriptionCycleDTO);
         return ResponseEntity.created(new URI("/api/inscription-cycles/" + inscriptionCycleDTO.getId()))

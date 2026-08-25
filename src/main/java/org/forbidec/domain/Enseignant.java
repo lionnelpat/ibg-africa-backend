@@ -63,6 +63,13 @@ public class Enseignant implements Serializable {
     @Column(name = "actif", nullable = false)
     private Boolean actif;
 
+    @Lob
+    @Column(name = "photo")
+    private byte[] photo;
+
+    @Column(name = "photo_content_type")
+    private String photoContentType;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "enseignant")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "cycle", "enseignant", "matiere", "sousMatiere", "cours", "typeTache", "notes" }, allowSetters = true)
@@ -198,6 +205,32 @@ public class Enseignant implements Serializable {
 
     public void setActif(Boolean actif) {
         this.actif = actif;
+    }
+
+    public byte[] getPhoto() {
+        return this.photo;
+    }
+
+    public Enseignant photo(byte[] photo) {
+        this.setPhoto(photo);
+        return this;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public String getPhotoContentType() {
+        return this.photoContentType;
+    }
+
+    public Enseignant photoContentType(String photoContentType) {
+        this.setPhotoContentType(photoContentType);
+        return this;
+    }
+
+    public void setPhotoContentType(String photoContentType) {
+        this.photoContentType = photoContentType;
     }
 
     public Set<EvaluationPrevue> getEvaluations() {

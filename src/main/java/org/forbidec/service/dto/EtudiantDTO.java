@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import org.forbidec.domain.enumeration.Sexe;
 
 /**
  * A DTO for the {@link org.forbidec.domain.Etudiant} entity.
@@ -58,6 +59,12 @@ public class EtudiantDTO implements Serializable {
 
     @NotNull
     private Boolean actif;
+
+    private Sexe sexe;
+
+    private byte[] photo;
+
+    private String photoContentType;
 
     private PaysDTO pays;
 
@@ -173,6 +180,30 @@ public class EtudiantDTO implements Serializable {
         this.actif = actif;
     }
 
+    public Sexe getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(Sexe sexe) {
+        this.sexe = sexe;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public String getPhotoContentType() {
+        return photoContentType;
+    }
+
+    public void setPhotoContentType(String photoContentType) {
+        this.photoContentType = photoContentType;
+    }
+
     public PaysDTO getPays() {
         return pays;
     }
@@ -220,6 +251,7 @@ public class EtudiantDTO implements Serializable {
             ", keycloakUserId='" + getKeycloakUserId() + "'" +
             ", commentaire='" + getCommentaire() + "'" +
             ", actif='" + getActif() + "'" +
+            ", sexe='" + getSexe() + "'" +
             ", pays=" + getPays() +
             "}";
     }

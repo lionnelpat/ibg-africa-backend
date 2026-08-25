@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import org.forbidec.domain.enumeration.Sexe;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -84,6 +85,17 @@ public class Etudiant implements Serializable {
     @NotNull
     @Column(name = "actif", nullable = false)
     private Boolean actif;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sexe")
+    private Sexe sexe;
+
+    @Lob
+    @Column(name = "photo")
+    private byte[] photo;
+
+    @Column(name = "photo_content_type")
+    private String photoContentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "centres", "etudiants" }, allowSetters = true)
@@ -286,6 +298,45 @@ public class Etudiant implements Serializable {
 
     public void setActif(Boolean actif) {
         this.actif = actif;
+    }
+
+    public Sexe getSexe() {
+        return this.sexe;
+    }
+
+    public Etudiant sexe(Sexe sexe) {
+        this.setSexe(sexe);
+        return this;
+    }
+
+    public void setSexe(Sexe sexe) {
+        this.sexe = sexe;
+    }
+
+    public byte[] getPhoto() {
+        return this.photo;
+    }
+
+    public Etudiant photo(byte[] photo) {
+        this.setPhoto(photo);
+        return this;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public String getPhotoContentType() {
+        return this.photoContentType;
+    }
+
+    public Etudiant photoContentType(String photoContentType) {
+        this.setPhotoContentType(photoContentType);
+        return this;
+    }
+
+    public void setPhotoContentType(String photoContentType) {
+        this.photoContentType = photoContentType;
     }
 
     public Pays getPays() {
