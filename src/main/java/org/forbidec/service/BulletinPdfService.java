@@ -120,10 +120,12 @@ public class BulletinPdfService {
             "table.masthead{width:100%;margin-bottom:1.5rem;}" +
             "table.masthead td{vertical-align:middle;}" +
             "table.masthead td.logo{width:15%;}" +
-            "table.masthead td.logo img{height:64px;}" +
+            "table.masthead td.logo .logo-box{width:64px;height:64px;}" +
+            "table.masthead td.logo img{max-width:100%;max-height:100%;width:auto;height:auto;}" +
             "table.masthead td.logo-droit{text-align:right;}" +
+            "table.masthead td.logo-droit .logo-box{margin-left:auto;}" +
             ".entete{text-align:center;font-style:italic;font-weight:bold;margin:0;}" +
-            ".identite{text-align:right;font-weight:bold;margin-bottom:2rem;}" +
+            ".identite{text-align:center;font-weight:bold;margin-bottom:2rem;}" +
             ".titre{text-align:center;font-size:1.1rem;margin-bottom:1.5rem;}" +
             "table.lignes{width:100%;border-collapse:collapse;margin-bottom:1.5rem;}" +
             "table.lignes th{text-align:left;border-bottom:1px solid #000;padding:0.25rem 0.5rem;}" +
@@ -139,15 +141,15 @@ public class BulletinPdfService {
             ".pied{font-size:0.7rem;}" +
             "</style></head><body>" +
             "<table class=\"masthead\"><tr>" +
-            "<td class=\"logo\"><img src=\"data:image/jpeg;base64," +
+            "<td class=\"logo\"><div class=\"logo-box\"><img src=\"data:image/jpeg;base64," +
             logoGaucheBase64 +
-            "\"/></td>" +
+            "\"/></div></td>" +
             "<td class=\"entete\">" +
             entete +
             "</td>" +
-            "<td class=\"logo logo-droit\"><img src=\"data:image/png;base64," +
+            "<td class=\"logo logo-droit\"><div class=\"logo-box\"><img src=\"data:image/png;base64," +
             logoDroitBase64 +
-            "\"/></td>" +
+            "\"/></div></td>" +
             "</tr></table>" +
             "<p class=\"identite\">" +
             esc(b.getNom()) +

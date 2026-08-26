@@ -215,11 +215,13 @@ public class SaisieNotesService {
     }
 
     /**
-     * Saisie en masse depuis un fichier Excel : une ligne d'en-tête ignorée,
-     * puis colonne A = matricule, colonne B = nom prénom (informatif,
-     * non exploité), colonne C = note. Les matricules inconnus ou les
-     * notes non numériques sont rapportés en erreur sans bloquer le
-     * reste du fichier ; les lignes valides passent ensuite par le même
+     * Saisie en masse depuis un fichier Excel généré par
+     * {@link #genererTemplateExcel} : 5 premières lignes ignorées (Matière,
+     * vide, Enseignant, vide, en-tête du tableau), puis colonne A =
+     * matricule, colonne B = nom prénom (informatif, non exploité),
+     * colonne C = note. Les matricules inconnus ou les notes non
+     * numériques sont rapportés en erreur sans bloquer le reste du
+     * fichier ; les lignes valides passent ensuite par le même
      * {@link #enregistrer} que la saisie manuelle (donc le même contrôle
      * d'inscription au cycle, et la même traçabilité HistoriqueNote).
      */
@@ -232,8 +234,8 @@ public class SaisieNotesService {
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 int numeroLigne = row.getRowNum() + 1;
-                if (row.getRowNum() == 0) {
-                    // en-tête
+                if (row.getRowNum() < 5) {
+                    // lignes 1-4 : Matière / vide / Enseignant / vide, ligne 5 : en-tête
                     continue;
                 }
                 Cell celluleMatricule = row.getCell(0);
@@ -282,10 +284,12 @@ public class SaisieNotesService {
     }
 
     /**
-     * Modèle Excel vierge pour la saisie hors-ligne : une ligne d'en-tête
-     * (Matricule, Nom Prénom, Note) puis une ligne par étudiant inscrit au
-     * cycle de la matière, prête à être complétée par l'enseignant et
-     * réimportée via {@link #importerExcel}.
+     * Modèle Excel vierge pour la saisie hors-ligne : 4 lignes d'information
+     * (Matière, ligne vide, Enseignant, ligne vide), puis l'en-tête du
+     * tableau (Matricule, Nom Prénom, Note) à la ligne 5, puis une ligne par
+     * étudiant inscrit au cycle de la matière, prête à être complétée par
+     * l'enseignant et réimportée via {@link #importerExcel} (qui ignore les
+     * 5 premières lignes en conséquence).
      */
     @Transactional(readOnly = true)
     public byte[] genererTemplateExcel(Long evaluationPrevueId) {
@@ -295,14 +299,23 @@ public class SaisieNotesService {
 
         List<InscriptionCycle> inscriptions = cycleDetailQueryRepository.findInscriptionsForCycle(ep.getCycle().getId());
 
+        String matiereLibelle = ep.getMatiere() != null ? ep.getMatiere().getIntitule() : "";
+        String enseignantLibelle = ep.getEnseignant() != null ? ep.getEnseignant().getNom() + " " + ep.getEnseignant().getPrenom() : "";
+
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Notes");
-            Row header = sheet.createRow(0);
+
+            sheet.createRow(0).createCell(0).setCellValue("Matière : " + matiereLibelle);
+            sheet.createRow(1);
+            sheet.createRow(2).createCell(0).setCellValue("Enseignant : " + enseignantLibelle);
+            sheet.createRow(3);
+
+            Row header = sheet.createRow(4);
             header.createCell(0).setCellValue("Matricule");
             header.createCell(1).setCellValue("Nom Prénom");
             header.createCell(2).setCellValue("Note");
 
-            int numeroLigne = 1;
+            int numeroLigne = 5;
             for (InscriptionCycle inscription : inscriptions) {
                 Etudiant etudiant = inscription.getEtudiant();
                 if (etudiant == null) {
