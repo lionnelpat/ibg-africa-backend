@@ -299,7 +299,7 @@ public class SaisieNotesService {
 
         List<InscriptionCycle> inscriptions = cycleDetailQueryRepository.findInscriptionsForCycle(ep.getCycle().getId());
 
-        String matiereLibelle = ep.getMatiere() != null ? ep.getMatiere().getIntitule() : "";
+        String matiereLibelle = ep.getMatiere() != null ? ep.getCours().getLibelleLong() : "";
         String enseignantLibelle = ep.getEnseignant() != null ? ep.getEnseignant().getNom() + " " + ep.getEnseignant().getPrenom() : "";
 
         try (Workbook workbook = new XSSFWorkbook()) {
