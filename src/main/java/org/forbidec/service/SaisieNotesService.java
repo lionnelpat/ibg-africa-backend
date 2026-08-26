@@ -30,8 +30,10 @@ import org.forbidec.repository.EvaluationPrevueRepository;
 import org.forbidec.repository.EvaluationRealiseeRepository;
 import org.forbidec.repository.HistoriqueNoteRepository;
 import org.forbidec.repository.bulletin.CycleDetailQueryRepository;
+import org.forbidec.repository.etudiant.EtudiantCycleCountQueryRepository;
 import org.forbidec.repository.saisie.SaisieQueryRepository;
 import org.forbidec.security.SecurityUtils;
+import org.forbidec.service.dto.etudiant.EtudiantCycleCountDTO;
 import org.forbidec.service.dto.saisie.SaisieLigneDTO;
 import org.forbidec.service.dto.saisie.SaisieMatiereDTO;
 import org.forbidec.service.dto.saisie.SaisieNoteRequestDTO;
@@ -54,12 +56,15 @@ public class SaisieNotesService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SaisieNotesService.class);
 
+    private static final String[] NOMS_ANNEE = { "1re année", "2e année", "3e année", "4e année", "5e année" };
+
     private final EvaluationPrevueRepository evaluationPrevueRepository;
     private final EvaluationRealiseeRepository evaluationRealiseeRepository;
     private final HistoriqueNoteRepository historiqueNoteRepository;
     private final CycleDetailQueryRepository cycleDetailQueryRepository;
     private final SaisieQueryRepository saisieQueryRepository;
     private final EtudiantRepository etudiantRepository;
+    private final EtudiantCycleCountQueryRepository etudiantCycleCountQueryRepository;
 
     public SaisieNotesService(
         EvaluationPrevueRepository evaluationPrevueRepository,
@@ -67,7 +72,8 @@ public class SaisieNotesService {
         HistoriqueNoteRepository historiqueNoteRepository,
         CycleDetailQueryRepository cycleDetailQueryRepository,
         SaisieQueryRepository saisieQueryRepository,
-        EtudiantRepository etudiantRepository
+        EtudiantRepository etudiantRepository,
+        EtudiantCycleCountQueryRepository etudiantCycleCountQueryRepository
     ) {
         this.evaluationPrevueRepository = evaluationPrevueRepository;
         this.evaluationRealiseeRepository = evaluationRealiseeRepository;
@@ -75,6 +81,15 @@ public class SaisieNotesService {
         this.cycleDetailQueryRepository = cycleDetailQueryRepository;
         this.saisieQueryRepository = saisieQueryRepository;
         this.etudiantRepository = etudiantRepository;
+        this.etudiantCycleCountQueryRepository = etudiantCycleCountQueryRepository;
+    }
+
+    private static String anneeLabel(Long nombreCycles) {
+        if (nombreCycles == null || nombreCycles < 1) {
+            return "";
+        }
+        int index = (int) Math.min(nombreCycles, NOMS_ANNEE.length) - 1;
+        return NOMS_ANNEE[index];
     }
 
     @Transactional(readOnly = true)
@@ -286,10 +301,13 @@ public class SaisieNotesService {
     /**
      * Modèle Excel vierge pour la saisie hors-ligne : 4 lignes d'information
      * (Matière, ligne vide, Enseignant, ligne vide), puis l'en-tête du
-     * tableau (Matricule, Nom Prénom, Note) à la ligne 5, puis une ligne par
-     * étudiant inscrit au cycle de la matière, prête à être complétée par
-     * l'enseignant et réimportée via {@link #importerExcel} (qui ignore les
-     * 5 premières lignes en conséquence).
+     * tableau (Matricule, Nom Prénom, Note, Année) à la ligne 5, puis une
+     * ligne par étudiant inscrit au cycle de la matière, prête à être
+     * complétée par l'enseignant et réimportée via {@link #importerExcel}
+     * (qui ignore les 5 premières lignes en conséquence). La colonne
+     * "Année" (nombre de cycles suivis par l'étudiant, ex. "2e année") est
+     * purement informative : elle aide l'enseignant à distinguer deux
+     * étudiants homonymes, mais n'est pas lue à l'import.
      */
     @Transactional(readOnly = true)
     public byte[] genererTemplateExcel(Long evaluationPrevueId) {
@@ -301,6 +319,19 @@ public class SaisieNotesService {
 
         String matiereLibelle = ep.getMatiere() != null ? ep.getCours().getLibelleLong() : "";
         String enseignantLibelle = ep.getEnseignant() != null ? ep.getEnseignant().getNom() + " " + ep.getEnseignant().getPrenom() : "";
+
+        List<Long> etudiantIds = inscriptions
+            .stream()
+            .map(InscriptionCycle::getEtudiant)
+            .filter(Objects::nonNull)
+            .map(Etudiant::getId)
+            .toList();
+        Map<Long, Long> nombreCyclesParEtudiant = etudiantIds.isEmpty()
+            ? Map.of()
+            : etudiantCycleCountQueryRepository
+                .countByEtudiantIds(etudiantIds)
+                .stream()
+                .collect(Collectors.toMap(EtudiantCycleCountDTO::getEtudiantId, EtudiantCycleCountDTO::getTotal));
 
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Notes");
@@ -314,6 +345,7 @@ public class SaisieNotesService {
             header.createCell(0).setCellValue("Matricule");
             header.createCell(1).setCellValue("Nom Prénom");
             header.createCell(2).setCellValue("Note");
+            header.createCell(3).setCellValue("Année");
 
             int numeroLigne = 5;
             for (InscriptionCycle inscription : inscriptions) {
@@ -325,6 +357,7 @@ public class SaisieNotesService {
                 row.createCell(0).setCellValue(etudiant.getMatricule() != null ? etudiant.getMatricule() : "");
                 row.createCell(1).setCellValue(etudiant.getNom() + " " + etudiant.getPrenom());
                 row.createCell(2);
+                row.createCell(3).setCellValue(anneeLabel(nombreCyclesParEtudiant.get(etudiant.getId())));
             }
 
             ByteArrayOutputStream sortie = new ByteArrayOutputStream();
