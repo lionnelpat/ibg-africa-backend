@@ -1,15 +1,25 @@
 name: ibgafrica
 
-# Production stack for Dokploy: mysql, adminer, keycloak, backend, frontend.
-# Domains are mapped to each service from the Dokploy UI (see DEPLOY.md) —
-# this file intentionally carries no Traefik labels, since Dokploy manages
-# its own reverse proxy per service/port once a domain is attached.
+# Stack for Dokploy: mysql, adminer, keycloak, backend, frontend. The SAME
+# file is deployed twice on the same host — as the "main" branch project
+# (production) and as the "develop" branch project (staging) — so every
+# value that must differ between the two is an env var with a default that
+# preserves prod's current behaviour unchanged. Domains are mapped to each
+# service from the Dokploy UI (see DEPLOY.md); this file intentionally
+# carries no Traefik labels, since Dokploy manages its own reverse proxy
+# per service/port once a domain is attached — the `ports:` below are only
+# for direct host-level access (e.g. Adminer), not for domain routing.
 #
 # Required environment variables (set them in Dokploy, or in a local .env
 # for a first smoke test — see .env.example):
 #   MYSQL_ROOT_PASSWORD
 #   KEYCLOAK_ADMIN_PASSWORD
-#   CLIENT_SECRET_WEB_APP   (must match src/main/docker/realm-config-prod/jhipster-realm.json)
+#   CLIENT_SECRET_WEB_APP   (must match the realm's web_app client secret in REALM_CONFIG_DIR)
+#
+# Additional variables to set in Dokploy's staging project only (see
+# DEPLOY.md "Staging" section for the full list and recommended values) :
+#   REALM_CONFIG_DIR, KC_HOSTNAME_URL, OIDC_ISSUER_URI,
+#   KEYCLOAK_HOST_PORT, BACKEND_HOST_PORT, ADMINER_HOST_PORT, FRONTEND_HOST_PORT
 
 services:
   mysql:
@@ -42,7 +52,7 @@ services:
       - ibgafrica
     # Dokploy domain: adminer-ibgafrica.forbidec.org -> port 8080
     ports:
-      - '8081:8080'
+      - '${ADMINER_HOST_PORT:-8081}:8080'
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.2.3
@@ -55,13 +65,13 @@ services:
       KC_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_HOSTNAME: https://keycloak-ibgafrica.forbidec.org
+      KC_HOSTNAME: ${KC_HOSTNAME_URL:-https://keycloak-ibgafrica.forbidec.org}
       KC_HTTP_ENABLED: 'true'
       KC_PROXY_HEADERS: xforwarded
       KC_HEALTH_ENABLED: 'true'
       CLIENT_SECRET_WEB_APP: ${CLIENT_SECRET_WEB_APP}
     volumes:
-      - ./src/main/docker/realm-config-prod:/opt/keycloak/data/import:ro
+      - ./src/main/docker/${REALM_CONFIG_DIR:-realm-config-prod}:/opt/keycloak/data/import:ro
     healthcheck:
       test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/9000 && echo -e "GET /health/ready HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q "UP"']
       interval: 10s
@@ -75,7 +85,7 @@ services:
       - ibgafrica
     # Dokploy domain: keycloak-ibgafrica.forbidec.org -> port 8080
     ports:
-      - '9080:8080'
+      - '${KEYCLOAK_HOST_PORT:-9080}:8080'
 
   backend:
     build:
@@ -88,7 +98,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       SPRING_LIQUIBASE_URL: jdbc:mysql://mysql:3306/forbidec_backend?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
-      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI: https://keycloak-ibgafrica.forbidec.org/realms/jhipster
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI: ${OIDC_ISSUER_URI:-https://keycloak-ibgafrica.forbidec.org/realms/jhipster}
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_ID: web_app
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_SECRET: ${CLIENT_SECRET_WEB_APP}
       JAVA_OPTS: '-Xmx512m -Xms256m'
@@ -101,7 +111,7 @@ services:
       - ibgafrica
     # Dokploy domain: api-ibgafrica.forbidec.org -> port 8080
     ports:
-      - '8080:8080'
+      - '${BACKEND_HOST_PORT:-8080}:8080'
 
   frontend:
     build:
@@ -114,7 +124,7 @@ services:
       - ibgafrica
     # Dokploy domain: ibgafrica.forbidec.org -> port 80
     ports:
-      - '8082:80'
+      - '${FRONTEND_HOST_PORT:-8082}:80'
 
 networks:
   ibgafrica:
