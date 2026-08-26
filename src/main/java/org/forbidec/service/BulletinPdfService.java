@@ -2,8 +2,11 @@ package org.forbidec.service;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -11,6 +14,7 @@ import org.forbidec.domain.BaremeMention;
 import org.forbidec.repository.BaremeMentionRepository;
 import org.forbidec.service.dto.bulletin.BulletinDTO;
 import org.forbidec.service.dto.bulletin.BulletinLigneDTO;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +33,23 @@ public class BulletinPdfService {
     private final BulletinService bulletinService;
     private final BaremeMentionRepository baremeMentionRepository;
 
+    // Logos des partenaires (FES à gauche, IBG à droite) : fixes pour le
+    // centre de Dakar aujourd'hui. À rendre paramétrable par centre/pays
+    // le jour où un deuxième centre avec d'autres partenaires apparaît.
+    private final String logoGaucheBase64 = chargerLogoBase64("logos/fes-logo.jpg");
+    private final String logoDroitBase64 = chargerLogoBase64("logos/ibg-logo.png");
+
     public BulletinPdfService(BulletinService bulletinService, BaremeMentionRepository baremeMentionRepository) {
         this.bulletinService = bulletinService;
         this.baremeMentionRepository = baremeMentionRepository;
+    }
+
+    private static String chargerLogoBase64(String classpathLocation) {
+        try (InputStream in = new ClassPathResource(classpathLocation).getInputStream()) {
+            return Base64.getEncoder().encodeToString(in.readAllBytes());
+        } catch (IOException e) {
+            throw new IllegalStateException("Logo introuvable : " + classpathLocation, e);
+        }
     }
 
     public byte[] genererPdf(Long etudiantId) {
@@ -99,7 +117,12 @@ public class BulletinPdfService {
         return (
             "<html><head><meta charset=\"UTF-8\"/><style>" +
             "body{font-family:Arial,sans-serif;color:#000;font-size:11pt;}" +
-            ".entete{text-align:center;font-style:italic;font-weight:bold;margin:0 0 2rem 0;}" +
+            "table.masthead{width:100%;margin-bottom:1.5rem;}" +
+            "table.masthead td{vertical-align:middle;}" +
+            "table.masthead td.logo{width:15%;}" +
+            "table.masthead td.logo img{height:64px;}" +
+            "table.masthead td.logo-droit{text-align:right;}" +
+            ".entete{text-align:center;font-style:italic;font-weight:bold;margin:0;}" +
             ".identite{text-align:right;font-weight:bold;margin-bottom:2rem;}" +
             ".titre{text-align:center;font-size:1.1rem;margin-bottom:1.5rem;}" +
             "table.lignes{width:100%;border-collapse:collapse;margin-bottom:1.5rem;}" +
@@ -115,9 +138,17 @@ public class BulletinPdfService {
             ".legende{font-size:0.7rem;border-top:1px solid #000;padding-top:0.5rem;}" +
             ".pied{font-size:0.7rem;}" +
             "</style></head><body>" +
-            "<p class=\"entete\">" +
+            "<table class=\"masthead\"><tr>" +
+            "<td class=\"logo\"><img src=\"data:image/jpeg;base64," +
+            logoGaucheBase64 +
+            "\"/></td>" +
+            "<td class=\"entete\">" +
             entete +
-            "</p>" +
+            "</td>" +
+            "<td class=\"logo logo-droit\"><img src=\"data:image/png;base64," +
+            logoDroitBase64 +
+            "\"/></td>" +
+            "</tr></table>" +
             "<p class=\"identite\">" +
             esc(b.getNom()) +
             ", " +
