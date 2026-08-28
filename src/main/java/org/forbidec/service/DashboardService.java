@@ -14,6 +14,7 @@ import org.forbidec.repository.EtudiantRepository;
 import org.forbidec.repository.dashboard.AnneeCountProjection;
 import org.forbidec.repository.dashboard.CycleInscriptionCountProjection;
 import org.forbidec.repository.dashboard.DashboardQueryRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.dashboard.DashboardDTO;
 import org.forbidec.service.dto.dashboard.EvolutionAnneeDTO;
 import org.forbidec.service.dto.dashboard.RepartitionMentionDTO;
@@ -42,6 +43,7 @@ public class DashboardService {
     private final BaremeMentionRepository baremeMentionRepository;
     private final DashboardQueryRepository dashboardQueryRepository;
     private final MentionResolver mentionResolver;
+    private final PaysContextService paysContextService;
 
     public DashboardService(
         EtudiantRepository etudiantRepository,
@@ -49,7 +51,8 @@ public class DashboardService {
         EnseignantRepository enseignantRepository,
         BaremeMentionRepository baremeMentionRepository,
         DashboardQueryRepository dashboardQueryRepository,
-        MentionResolver mentionResolver
+        MentionResolver mentionResolver,
+        PaysContextService paysContextService
     ) {
         this.etudiantRepository = etudiantRepository;
         this.cycleRepository = cycleRepository;
@@ -57,10 +60,12 @@ public class DashboardService {
         this.baremeMentionRepository = baremeMentionRepository;
         this.dashboardQueryRepository = dashboardQueryRepository;
         this.mentionResolver = mentionResolver;
+        this.paysContextService = paysContextService;
     }
 
     public DashboardDTO getDashboard() {
         LOG.debug("Request to build the global Dashboard");
+        paysContextService.enableFilterForCurrentRequest();
 
         DashboardDTO dto = new DashboardDTO();
 
