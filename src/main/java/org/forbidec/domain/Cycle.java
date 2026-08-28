@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Promotion annuelle d'un centre. cloture verrouille toute saisie.
@@ -16,6 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "cycle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(name = "paysFilter", condition = "centre_id in (select cf.id from centre_formation cf where cf.pays_id in (:paysIds))")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Cycle implements Serializable {
 

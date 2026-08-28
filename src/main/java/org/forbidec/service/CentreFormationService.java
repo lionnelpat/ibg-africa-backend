@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.forbidec.domain.CentreFormation;
 import org.forbidec.repository.CentreFormationRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.CentreFormationDTO;
 import org.forbidec.service.mapper.CentreFormationMapper;
 import org.slf4j.Logger;
@@ -28,9 +29,16 @@ public class CentreFormationService {
 
     private final CentreFormationMapper centreFormationMapper;
 
-    public CentreFormationService(CentreFormationRepository centreFormationRepository, CentreFormationMapper centreFormationMapper) {
+    private final PaysContextService paysContextService;
+
+    public CentreFormationService(
+        CentreFormationRepository centreFormationRepository,
+        CentreFormationMapper centreFormationMapper,
+        PaysContextService paysContextService
+    ) {
         this.centreFormationRepository = centreFormationRepository;
         this.centreFormationMapper = centreFormationMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -87,6 +95,7 @@ public class CentreFormationService {
     @Transactional(readOnly = true)
     public List<CentreFormationDTO> findAll() {
         LOG.debug("Request to get all CentreFormations");
+        paysContextService.enableFilterForCurrentRequest();
         return centreFormationRepository
             .findAll()
             .stream()

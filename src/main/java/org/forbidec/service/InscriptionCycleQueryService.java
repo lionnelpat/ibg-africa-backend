@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.JoinType;
 import org.forbidec.domain.*; // for static metamodels
 import org.forbidec.domain.InscriptionCycle;
 import org.forbidec.repository.InscriptionCycleRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.criteria.InscriptionCycleCriteria;
 import org.forbidec.service.dto.InscriptionCycleDTO;
 import org.forbidec.service.mapper.InscriptionCycleMapper;
@@ -32,12 +33,16 @@ public class InscriptionCycleQueryService extends QueryService<InscriptionCycle>
 
     private final InscriptionCycleMapper inscriptionCycleMapper;
 
+    private final PaysContextService paysContextService;
+
     public InscriptionCycleQueryService(
         InscriptionCycleRepository inscriptionCycleRepository,
-        InscriptionCycleMapper inscriptionCycleMapper
+        InscriptionCycleMapper inscriptionCycleMapper,
+        PaysContextService paysContextService
     ) {
         this.inscriptionCycleRepository = inscriptionCycleRepository;
         this.inscriptionCycleMapper = inscriptionCycleMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -49,6 +54,7 @@ public class InscriptionCycleQueryService extends QueryService<InscriptionCycle>
     @Transactional(readOnly = true)
     public Page<InscriptionCycleDTO> findByCriteria(InscriptionCycleCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<InscriptionCycle> specification = createSpecification(criteria);
         return inscriptionCycleRepository.findAll(specification, page).map(inscriptionCycleMapper::toDto);
     }
@@ -61,6 +67,7 @@ public class InscriptionCycleQueryService extends QueryService<InscriptionCycle>
     @Transactional(readOnly = true)
     public long countByCriteria(InscriptionCycleCriteria criteria) {
         LOG.debug("count by criteria : {}", criteria);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<InscriptionCycle> specification = createSpecification(criteria);
         return inscriptionCycleRepository.count(specification);
     }

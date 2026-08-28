@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.JoinType;
 import org.forbidec.domain.*; // for static metamodels
 import org.forbidec.domain.EvaluationPrevue;
 import org.forbidec.repository.EvaluationPrevueRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.criteria.EvaluationPrevueCriteria;
 import org.forbidec.service.dto.EvaluationPrevueDTO;
 import org.forbidec.service.mapper.EvaluationPrevueMapper;
@@ -32,12 +33,16 @@ public class EvaluationPrevueQueryService extends QueryService<EvaluationPrevue>
 
     private final EvaluationPrevueMapper evaluationPrevueMapper;
 
+    private final PaysContextService paysContextService;
+
     public EvaluationPrevueQueryService(
         EvaluationPrevueRepository evaluationPrevueRepository,
-        EvaluationPrevueMapper evaluationPrevueMapper
+        EvaluationPrevueMapper evaluationPrevueMapper,
+        PaysContextService paysContextService
     ) {
         this.evaluationPrevueRepository = evaluationPrevueRepository;
         this.evaluationPrevueMapper = evaluationPrevueMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -49,6 +54,7 @@ public class EvaluationPrevueQueryService extends QueryService<EvaluationPrevue>
     @Transactional(readOnly = true)
     public Page<EvaluationPrevueDTO> findByCriteria(EvaluationPrevueCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<EvaluationPrevue> specification = createSpecification(criteria);
         return evaluationPrevueRepository.findAll(specification, page).map(evaluationPrevueMapper::toDto);
     }
@@ -61,6 +67,7 @@ public class EvaluationPrevueQueryService extends QueryService<EvaluationPrevue>
     @Transactional(readOnly = true)
     public long countByCriteria(EvaluationPrevueCriteria criteria) {
         LOG.debug("count by criteria : {}", criteria);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<EvaluationPrevue> specification = createSpecification(criteria);
         return evaluationPrevueRepository.count(specification);
     }

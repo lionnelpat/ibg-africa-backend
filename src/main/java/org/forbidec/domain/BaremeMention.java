@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Barème des mentions. Reconstitué depuis le pied de page du bulletin :
@@ -18,6 +19,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "bareme_mention")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(
+    name = "paysFilter",
+    condition = "centre_id is null or centre_id in (select cf.id from centre_formation cf where cf.pays_id in (:paysIds))"
+)
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class BaremeMention implements Serializable {
 

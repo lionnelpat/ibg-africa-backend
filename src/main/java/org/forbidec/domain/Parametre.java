@@ -8,6 +8,7 @@ import java.io.Serializable;
 import org.forbidec.domain.enumeration.TypeValeur;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Remplace tVariables. Sans centre rattaché, le paramètre est global.
@@ -16,6 +17,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "parametre")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(
+    name = "paysFilter",
+    condition = "centre_id is null or centre_id in (select cf.id from centre_formation cf where cf.pays_id in (:paysIds))"
+)
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Parametre implements Serializable {
 

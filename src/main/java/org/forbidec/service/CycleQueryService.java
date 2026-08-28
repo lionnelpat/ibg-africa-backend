@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.JoinType;
 import org.forbidec.domain.*; // for static metamodels
 import org.forbidec.domain.Cycle;
 import org.forbidec.repository.CycleRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.criteria.CycleCriteria;
 import org.forbidec.service.dto.CycleDTO;
 import org.forbidec.service.mapper.CycleMapper;
@@ -32,9 +33,12 @@ public class CycleQueryService extends QueryService<Cycle> {
 
     private final CycleMapper cycleMapper;
 
-    public CycleQueryService(CycleRepository cycleRepository, CycleMapper cycleMapper) {
+    private final PaysContextService paysContextService;
+
+    public CycleQueryService(CycleRepository cycleRepository, CycleMapper cycleMapper, PaysContextService paysContextService) {
         this.cycleRepository = cycleRepository;
         this.cycleMapper = cycleMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -46,6 +50,7 @@ public class CycleQueryService extends QueryService<Cycle> {
     @Transactional(readOnly = true)
     public Page<CycleDTO> findByCriteria(CycleCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<Cycle> specification = createSpecification(criteria);
         return cycleRepository.findAll(specification, page).map(cycleMapper::toDto);
     }
@@ -58,6 +63,7 @@ public class CycleQueryService extends QueryService<Cycle> {
     @Transactional(readOnly = true)
     public long countByCriteria(CycleCriteria criteria) {
         LOG.debug("count by criteria : {}", criteria);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<Cycle> specification = createSpecification(criteria);
         return cycleRepository.count(specification);
     }

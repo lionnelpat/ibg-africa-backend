@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.JoinType;
 import org.forbidec.domain.*; // for static metamodels
 import org.forbidec.domain.EvaluationRealisee;
 import org.forbidec.repository.EvaluationRealiseeRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.criteria.EvaluationRealiseeCriteria;
 import org.forbidec.service.dto.EvaluationRealiseeDTO;
 import org.forbidec.service.mapper.EvaluationRealiseeMapper;
@@ -32,12 +33,16 @@ public class EvaluationRealiseeQueryService extends QueryService<EvaluationReali
 
     private final EvaluationRealiseeMapper evaluationRealiseeMapper;
 
+    private final PaysContextService paysContextService;
+
     public EvaluationRealiseeQueryService(
         EvaluationRealiseeRepository evaluationRealiseeRepository,
-        EvaluationRealiseeMapper evaluationRealiseeMapper
+        EvaluationRealiseeMapper evaluationRealiseeMapper,
+        PaysContextService paysContextService
     ) {
         this.evaluationRealiseeRepository = evaluationRealiseeRepository;
         this.evaluationRealiseeMapper = evaluationRealiseeMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -49,6 +54,7 @@ public class EvaluationRealiseeQueryService extends QueryService<EvaluationReali
     @Transactional(readOnly = true)
     public Page<EvaluationRealiseeDTO> findByCriteria(EvaluationRealiseeCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<EvaluationRealisee> specification = createSpecification(criteria);
         return evaluationRealiseeRepository.findAll(specification, page).map(evaluationRealiseeMapper::toDto);
     }
@@ -61,6 +67,7 @@ public class EvaluationRealiseeQueryService extends QueryService<EvaluationReali
     @Transactional(readOnly = true)
     public long countByCriteria(EvaluationRealiseeCriteria criteria) {
         LOG.debug("count by criteria : {}", criteria);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<EvaluationRealisee> specification = createSpecification(criteria);
         return evaluationRealiseeRepository.count(specification);
     }
