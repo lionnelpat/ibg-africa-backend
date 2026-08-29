@@ -72,6 +72,7 @@ services:
       CLIENT_SECRET_WEB_APP: ${CLIENT_SECRET_WEB_APP}
     volumes:
       - ./src/main/docker/${REALM_CONFIG_DIR:-realm-config-prod}:/opt/keycloak/data/import:ro
+      - ./src/main/docker/keycloak-theme/ibgafrica:/opt/keycloak/themes/ibgafrica:ro
     healthcheck:
       test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/9000 && echo -e "GET /health/ready HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q "UP"']
       interval: 10s
