@@ -3,6 +3,7 @@ package org.forbidec.service;
 import java.util.Optional;
 import org.forbidec.domain.EvaluationPrevue;
 import org.forbidec.repository.EvaluationPrevueRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.EvaluationPrevueDTO;
 import org.forbidec.service.mapper.EvaluationPrevueMapper;
 import org.slf4j.Logger;
@@ -25,9 +26,16 @@ public class EvaluationPrevueService {
 
     private final EvaluationPrevueMapper evaluationPrevueMapper;
 
-    public EvaluationPrevueService(EvaluationPrevueRepository evaluationPrevueRepository, EvaluationPrevueMapper evaluationPrevueMapper) {
+    private final PaysContextService paysContextService;
+
+    public EvaluationPrevueService(
+        EvaluationPrevueRepository evaluationPrevueRepository,
+        EvaluationPrevueMapper evaluationPrevueMapper,
+        PaysContextService paysContextService
+    ) {
         this.evaluationPrevueRepository = evaluationPrevueRepository;
         this.evaluationPrevueMapper = evaluationPrevueMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -51,6 +59,7 @@ public class EvaluationPrevueService {
      */
     public EvaluationPrevueDTO update(EvaluationPrevueDTO evaluationPrevueDTO) {
         LOG.debug("Request to update EvaluationPrevue : {}", evaluationPrevueDTO);
+        evaluationPrevueRepository.findById(evaluationPrevueDTO.getId()).ifPresent(paysContextService::verifierAccesEvaluationPrevue);
         EvaluationPrevue evaluationPrevue = evaluationPrevueMapper.toEntity(evaluationPrevueDTO);
         evaluationPrevue = evaluationPrevueRepository.save(evaluationPrevue);
         return evaluationPrevueMapper.toDto(evaluationPrevue);
@@ -68,6 +77,7 @@ public class EvaluationPrevueService {
         return evaluationPrevueRepository
             .findById(evaluationPrevueDTO.getId())
             .map(existingEvaluationPrevue -> {
+                paysContextService.verifierAccesEvaluationPrevue(existingEvaluationPrevue);
                 evaluationPrevueMapper.partialUpdate(existingEvaluationPrevue, evaluationPrevueDTO);
 
                 return existingEvaluationPrevue;
@@ -94,7 +104,9 @@ public class EvaluationPrevueService {
     @Transactional(readOnly = true)
     public Optional<EvaluationPrevueDTO> findOne(Long id) {
         LOG.debug("Request to get EvaluationPrevue : {}", id);
-        return evaluationPrevueRepository.findOneWithEagerRelationships(id).map(evaluationPrevueMapper::toDto);
+        Optional<EvaluationPrevue> evaluationPrevue = evaluationPrevueRepository.findOneWithEagerRelationships(id);
+        evaluationPrevue.ifPresent(paysContextService::verifierAccesEvaluationPrevue);
+        return evaluationPrevue.map(evaluationPrevueMapper::toDto);
     }
 
     /**
@@ -104,6 +116,7 @@ public class EvaluationPrevueService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete EvaluationPrevue : {}", id);
+        evaluationPrevueRepository.findById(id).ifPresent(paysContextService::verifierAccesEvaluationPrevue);
         evaluationPrevueRepository.deleteById(id);
     }
 }

@@ -3,6 +3,7 @@ package org.forbidec.service;
 import java.util.Optional;
 import org.forbidec.domain.Etudiant;
 import org.forbidec.repository.EtudiantRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.EtudiantDTO;
 import org.forbidec.service.mapper.EtudiantMapper;
 import org.slf4j.Logger;
@@ -25,9 +26,12 @@ public class EtudiantService {
 
     private final EtudiantMapper etudiantMapper;
 
-    public EtudiantService(EtudiantRepository etudiantRepository, EtudiantMapper etudiantMapper) {
+    private final PaysContextService paysContextService;
+
+    public EtudiantService(EtudiantRepository etudiantRepository, EtudiantMapper etudiantMapper, PaysContextService paysContextService) {
         this.etudiantRepository = etudiantRepository;
         this.etudiantMapper = etudiantMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -51,6 +55,7 @@ public class EtudiantService {
      */
     public EtudiantDTO update(EtudiantDTO etudiantDTO) {
         LOG.debug("Request to update Etudiant : {}", etudiantDTO);
+        etudiantRepository.findById(etudiantDTO.getId()).ifPresent(paysContextService::verifierAccesEtudiant);
         Etudiant etudiant = etudiantMapper.toEntity(etudiantDTO);
         etudiant = etudiantRepository.save(etudiant);
         return etudiantMapper.toDto(etudiant);
@@ -68,6 +73,7 @@ public class EtudiantService {
         return etudiantRepository
             .findById(etudiantDTO.getId())
             .map(existingEtudiant -> {
+                paysContextService.verifierAccesEtudiant(existingEtudiant);
                 etudiantMapper.partialUpdate(existingEtudiant, etudiantDTO);
 
                 return existingEtudiant;
@@ -94,7 +100,9 @@ public class EtudiantService {
     @Transactional(readOnly = true)
     public Optional<EtudiantDTO> findOne(Long id) {
         LOG.debug("Request to get Etudiant : {}", id);
-        return etudiantRepository.findOneWithEagerRelationships(id).map(etudiantMapper::toDto);
+        Optional<Etudiant> etudiant = etudiantRepository.findOneWithEagerRelationships(id);
+        etudiant.ifPresent(paysContextService::verifierAccesEtudiant);
+        return etudiant.map(etudiantMapper::toDto);
     }
 
     /**
@@ -104,6 +112,7 @@ public class EtudiantService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete Etudiant : {}", id);
+        etudiantRepository.findById(id).ifPresent(paysContextService::verifierAccesEtudiant);
         etudiantRepository.deleteById(id);
     }
 }

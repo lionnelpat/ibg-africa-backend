@@ -62,6 +62,7 @@ public class CentreFormationService {
      */
     public CentreFormationDTO update(CentreFormationDTO centreFormationDTO) {
         LOG.debug("Request to update CentreFormation : {}", centreFormationDTO);
+        centreFormationRepository.findById(centreFormationDTO.getId()).ifPresent(paysContextService::verifierAccesCentreFormation);
         CentreFormation centreFormation = centreFormationMapper.toEntity(centreFormationDTO);
         centreFormation = centreFormationRepository.save(centreFormation);
         return centreFormationMapper.toDto(centreFormation);
@@ -79,6 +80,7 @@ public class CentreFormationService {
         return centreFormationRepository
             .findById(centreFormationDTO.getId())
             .map(existingCentreFormation -> {
+                paysContextService.verifierAccesCentreFormation(existingCentreFormation);
                 centreFormationMapper.partialUpdate(existingCentreFormation, centreFormationDTO);
 
                 return existingCentreFormation;
@@ -121,7 +123,9 @@ public class CentreFormationService {
     @Transactional(readOnly = true)
     public Optional<CentreFormationDTO> findOne(Long id) {
         LOG.debug("Request to get CentreFormation : {}", id);
-        return centreFormationRepository.findOneWithEagerRelationships(id).map(centreFormationMapper::toDto);
+        Optional<CentreFormation> centreFormation = centreFormationRepository.findOneWithEagerRelationships(id);
+        centreFormation.ifPresent(paysContextService::verifierAccesCentreFormation);
+        return centreFormation.map(centreFormationMapper::toDto);
     }
 
     /**
@@ -131,6 +135,7 @@ public class CentreFormationService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete CentreFormation : {}", id);
+        centreFormationRepository.findById(id).ifPresent(paysContextService::verifierAccesCentreFormation);
         centreFormationRepository.deleteById(id);
     }
 }

@@ -8,6 +8,8 @@ import org.forbidec.domain.CentreFormation;
 import org.forbidec.domain.Cycle;
 import org.forbidec.domain.Etudiant;
 import org.forbidec.domain.EvaluationPrevue;
+import org.forbidec.domain.EvaluationRealisee;
+import org.forbidec.domain.InscriptionCycle;
 import org.forbidec.domain.Pays;
 import org.forbidec.repository.PaysRepository;
 import org.hibernate.Session;
@@ -162,6 +164,18 @@ public class PaysContextService {
 
     public void verifierAccesEvaluationPrevue(EvaluationPrevue evaluationPrevue) {
         verifierAccesCycle(evaluationPrevue == null ? null : evaluationPrevue.getCycle());
+    }
+
+    public void verifierAccesInscriptionCycle(InscriptionCycle inscriptionCycle) {
+        verifierAccesEtudiant(inscriptionCycle == null ? null : inscriptionCycle.getEtudiant());
+    }
+
+    public void verifierAccesEvaluationRealisee(EvaluationRealisee evaluationRealisee) {
+        verifierAccesEtudiant(evaluationRealisee == null ? null : evaluationRealisee.getEtudiant());
+    }
+
+    public void verifierAccesCentreFormation(CentreFormation centre) {
+        verifierAccesPays(paysDuCentre(centre));
     }
 
     private Pays paysDuCentre(CentreFormation centre) {

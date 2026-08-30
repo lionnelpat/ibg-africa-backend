@@ -3,6 +3,7 @@ package org.forbidec.service;
 import java.util.Optional;
 import org.forbidec.domain.InscriptionCycle;
 import org.forbidec.repository.InscriptionCycleRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.InscriptionCycleDTO;
 import org.forbidec.service.mapper.InscriptionCycleMapper;
 import org.slf4j.Logger;
@@ -25,9 +26,16 @@ public class InscriptionCycleService {
 
     private final InscriptionCycleMapper inscriptionCycleMapper;
 
-    public InscriptionCycleService(InscriptionCycleRepository inscriptionCycleRepository, InscriptionCycleMapper inscriptionCycleMapper) {
+    private final PaysContextService paysContextService;
+
+    public InscriptionCycleService(
+        InscriptionCycleRepository inscriptionCycleRepository,
+        InscriptionCycleMapper inscriptionCycleMapper,
+        PaysContextService paysContextService
+    ) {
         this.inscriptionCycleRepository = inscriptionCycleRepository;
         this.inscriptionCycleMapper = inscriptionCycleMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -51,6 +59,7 @@ public class InscriptionCycleService {
      */
     public InscriptionCycleDTO update(InscriptionCycleDTO inscriptionCycleDTO) {
         LOG.debug("Request to update InscriptionCycle : {}", inscriptionCycleDTO);
+        inscriptionCycleRepository.findById(inscriptionCycleDTO.getId()).ifPresent(paysContextService::verifierAccesInscriptionCycle);
         InscriptionCycle inscriptionCycle = inscriptionCycleMapper.toEntity(inscriptionCycleDTO);
         inscriptionCycle = inscriptionCycleRepository.save(inscriptionCycle);
         return inscriptionCycleMapper.toDto(inscriptionCycle);
@@ -68,6 +77,7 @@ public class InscriptionCycleService {
         return inscriptionCycleRepository
             .findById(inscriptionCycleDTO.getId())
             .map(existingInscriptionCycle -> {
+                paysContextService.verifierAccesInscriptionCycle(existingInscriptionCycle);
                 inscriptionCycleMapper.partialUpdate(existingInscriptionCycle, inscriptionCycleDTO);
 
                 return existingInscriptionCycle;
@@ -94,7 +104,9 @@ public class InscriptionCycleService {
     @Transactional(readOnly = true)
     public Optional<InscriptionCycleDTO> findOne(Long id) {
         LOG.debug("Request to get InscriptionCycle : {}", id);
-        return inscriptionCycleRepository.findOneWithEagerRelationships(id).map(inscriptionCycleMapper::toDto);
+        Optional<InscriptionCycle> inscriptionCycle = inscriptionCycleRepository.findOneWithEagerRelationships(id);
+        inscriptionCycle.ifPresent(paysContextService::verifierAccesInscriptionCycle);
+        return inscriptionCycle.map(inscriptionCycleMapper::toDto);
     }
 
     /**
@@ -104,6 +116,7 @@ public class InscriptionCycleService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete InscriptionCycle : {}", id);
+        inscriptionCycleRepository.findById(id).ifPresent(paysContextService::verifierAccesInscriptionCycle);
         inscriptionCycleRepository.deleteById(id);
     }
 }
