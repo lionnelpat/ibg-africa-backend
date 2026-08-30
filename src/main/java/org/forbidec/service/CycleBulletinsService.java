@@ -21,9 +21,11 @@ import org.forbidec.domain.Etudiant;
 import org.forbidec.domain.InscriptionCycle;
 import org.forbidec.repository.CycleRepository;
 import org.forbidec.repository.bulletin.CycleDetailQueryRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,15 +45,18 @@ public class CycleBulletinsService {
     private final CycleRepository cycleRepository;
     private final CycleDetailQueryRepository cycleDetailQueryRepository;
     private final BulletinPdfService bulletinPdfService;
+    private final PaysContextService paysContextService;
 
     public CycleBulletinsService(
         CycleRepository cycleRepository,
         CycleDetailQueryRepository cycleDetailQueryRepository,
-        BulletinPdfService bulletinPdfService
+        BulletinPdfService bulletinPdfService,
+        PaysContextService paysContextService
     ) {
         this.cycleRepository = cycleRepository;
         this.cycleDetailQueryRepository = cycleDetailQueryRepository;
         this.bulletinPdfService = bulletinPdfService;
+        this.paysContextService = paysContextService;
     }
 
     /** Résultat de la génération : le contenu du ZIP, son nom de fichier suggéré, et les échecs éventuels. */
@@ -61,6 +66,7 @@ public class CycleBulletinsService {
         Cycle cycle = cycleRepository.findById(cycleId).orElseThrow(() ->
             new BadRequestAlertException("Cycle introuvable", "cycle", "idnotfound")
         );
+        paysContextService.verifierAccesCycle(cycle);
 
         List<Etudiant> etudiants = cycleDetailQueryRepository
             .findInscriptionsForCycle(cycleId)
@@ -75,7 +81,14 @@ public class CycleBulletinsService {
 
         record Resultat(String nomFichier, byte[] pdf, String erreur) {}
 
-        ExecutorService executor = Executors.newFixedThreadPool(Math.min(MAX_THREADS, etudiants.size()));
+        // SecurityContextHolder est thread-local par défaut : sans ce wrapper,
+        // le contexte de sécurité (donc les pays autorisés) serait invisible
+        // dans les threads du pool, et verifierAccesEtudiant (appelé plus bas
+        // via bulletinPdfService -> bulletinService) rejetterait à tort tous
+        // les étudiants, même pour un cycle légitimement autorisé.
+        ExecutorService executor = new DelegatingSecurityContextExecutorService(
+            Executors.newFixedThreadPool(Math.min(MAX_THREADS, etudiants.size()))
+        );
         List<Future<Resultat>> futures = new ArrayList<>();
         try {
             for (Etudiant etudiant : etudiants) {

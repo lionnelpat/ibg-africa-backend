@@ -7,6 +7,7 @@ import org.forbidec.domain.EvaluationPrevue;
 import org.forbidec.domain.InscriptionCycle;
 import org.forbidec.repository.CycleRepository;
 import org.forbidec.repository.bulletin.CycleDetailQueryRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.bulletin.CycleDetailDTO;
 import org.forbidec.service.dto.bulletin.EtudiantResumeDTO;
 import org.forbidec.service.dto.bulletin.MatiereDispenseeDTO;
@@ -28,10 +29,16 @@ public class CycleDetailService {
 
     private final CycleRepository cycleRepository;
     private final CycleDetailQueryRepository cycleDetailQueryRepository;
+    private final PaysContextService paysContextService;
 
-    public CycleDetailService(CycleRepository cycleRepository, CycleDetailQueryRepository cycleDetailQueryRepository) {
+    public CycleDetailService(
+        CycleRepository cycleRepository,
+        CycleDetailQueryRepository cycleDetailQueryRepository,
+        PaysContextService paysContextService
+    ) {
         this.cycleRepository = cycleRepository;
         this.cycleDetailQueryRepository = cycleDetailQueryRepository;
+        this.paysContextService = paysContextService;
     }
 
     public CycleDetailDTO getDetail(Long cycleId) {
@@ -40,6 +47,7 @@ public class CycleDetailService {
         Cycle cycle = cycleRepository.findById(cycleId).orElseThrow(() ->
             new BadRequestAlertException("Cycle introuvable", "cycle", "idnotfound")
         );
+        paysContextService.verifierAccesCycle(cycle);
 
         CycleDetailDTO dto = new CycleDetailDTO();
         dto.setId(cycle.getId());

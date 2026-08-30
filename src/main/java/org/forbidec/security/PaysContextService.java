@@ -4,9 +4,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import org.forbidec.domain.CentreFormation;
+import org.forbidec.domain.Cycle;
+import org.forbidec.domain.Etudiant;
+import org.forbidec.domain.EvaluationPrevue;
 import org.forbidec.domain.Pays;
 import org.forbidec.repository.PaysRepository;
 import org.hibernate.Session;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -136,6 +141,42 @@ public class PaysContextService {
         }
 
         session.enableFilter("paysFilter").setParameterList("paysIds", paysIds);
+    }
+
+    /**
+     * Contrôle d'accès pour les lectures par identifiant direct (bulletin PDF,
+     * détail de cycle, saisie de notes...) : le filtre Hibernate {@code paysFilter}
+     * ne protège que les requêtes JPQL/Criteria (findByCriteria, etc.), jamais un
+     * {@code findById} — un utilisateur pourrait donc, en changeant l'id dans
+     * l'URL, atteindre une fiche d'un autre pays que le sien. À appeler juste
+     * après avoir chargé l'entité cible, avant de lui faire quoi que ce soit.
+     * Lève {@link AccessDeniedException} (→ 403) plutôt que de risquer une fuite.
+     */
+    public void verifierAccesEtudiant(Etudiant etudiant) {
+        verifierAccesPays(etudiant == null ? null : etudiant.getPays());
+    }
+
+    public void verifierAccesCycle(Cycle cycle) {
+        verifierAccesPays(cycle == null ? null : paysDuCentre(cycle.getCentre()));
+    }
+
+    public void verifierAccesEvaluationPrevue(EvaluationPrevue evaluationPrevue) {
+        verifierAccesCycle(evaluationPrevue == null ? null : evaluationPrevue.getCycle());
+    }
+
+    private Pays paysDuCentre(CentreFormation centre) {
+        return centre == null ? null : centre.getPays();
+    }
+
+    private void verifierAccesPays(Pays pays) {
+        if (isGlobalAdmin()) {
+            return;
+        }
+        boolean autorise =
+            pays != null && getAllowedPaysCodes().stream().anyMatch(code -> code.equalsIgnoreCase(pays.getCodeIso()));
+        if (!autorise) {
+            throw new AccessDeniedException("Accès refusé : cette ressource n'appartient pas à un pays autorisé pour cet utilisateur");
+        }
     }
 
     private String currentRequestHeader() {
