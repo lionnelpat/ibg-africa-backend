@@ -29,6 +29,25 @@ body {
     margin-bottom: 0.5rem !important;
 }
 
+body {
+    overflow-x: hidden;
+}
+
+.login-pf-page {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1.25rem !important;
+    box-sizing: border-box;
+}
+
+#kc-header {
+    width: 100%;
+    max-width: 26rem;
+}
+
 .card-pf,
 #kc-content-wrapper .card-pf {
     background: var(--ibg-cream) !important;
@@ -37,10 +56,8 @@ body {
     box-shadow: 0 30px 60px -30px rgba(33, 27, 23, 0.35) !important;
     padding: 2.5rem 2.25rem !important;
     margin: 0 !important;
-}
-
-body {
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 26rem;
 }
 
 #kc-page-title,
