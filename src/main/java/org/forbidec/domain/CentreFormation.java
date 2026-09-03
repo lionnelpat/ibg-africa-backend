@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Centre de formation. Porte les blocs d'impression du bulletin
@@ -18,6 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "centre_formation")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(name = "paysFilter", condition = "pays_id in (:paysIds)")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class CentreFormation implements Serializable {
 

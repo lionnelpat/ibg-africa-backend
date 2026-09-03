@@ -41,7 +41,11 @@ services:
       - ibgafrica
 
   adminer:
-    image: adminer:latest
+    # Pinned (not :latest): a moving tag never updates an already-running
+    # container, so it silently drifts to whatever PHP version was current
+    # the day it was first pulled. Pin to a specific tag and bump it
+    # deliberately every so often instead.
+    image: adminer:6.0.1
     restart: unless-stopped
     environment:
       ADMINER_DEFAULT_SERVER: mysql
@@ -51,8 +55,19 @@ services:
     networks:
       - ibgafrica
     # Dokploy domain: adminer-ibgafrica.forbidec.org -> port 8080
+    # IMPORTANT: this domain must be protected in the Dokploy dashboard
+    # (HTTP Basic Auth middleware, or remove the domain and use the SSH
+    # tunnel below instead) — Dokploy routes the domain straight to the
+    # container over the internal network, bypassing the "ports:" mapping
+    # below entirely, so this file cannot restrict that path by itself.
+    #
+    # This host port binding is defense-in-depth only: it closes the
+    # secondary "http://<vps-ip>:8081" access path by keeping it off the
+    # public interface. Reach it when needed via an SSH tunnel:
+    #   ssh -L 8081:localhost:8081 <user>@<vps-host>
+    # then browse http://localhost:8081 locally.
     ports:
-      - '${ADMINER_HOST_PORT:-8081}:8080'
+      - '127.0.0.1:${ADMINER_HOST_PORT:-8081}:8080'
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.2.3
@@ -72,6 +87,7 @@ services:
       CLIENT_SECRET_WEB_APP: ${CLIENT_SECRET_WEB_APP}
     volumes:
       - ./src/main/docker/${REALM_CONFIG_DIR:-realm-config-prod}:/opt/keycloak/data/import:ro
+      - ./src/main/docker/keycloak-theme/ibgafrica:/opt/keycloak/themes/ibgafrica:ro
     healthcheck:
       test: ['CMD-SHELL', 'exec 3<>/dev/tcp/localhost/9000 && echo -e "GET /health/ready HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep -q "UP"']
       interval: 10s

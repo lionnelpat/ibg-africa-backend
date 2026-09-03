@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Évaluation planifiée pour un cycle : le « quoi » et le « par qui ».
@@ -17,6 +18,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "evaluation_prevue")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(
+    name = "paysFilter",
+    condition = "cycle_id in (select cy.id from cycle cy where cy.centre_id in (select cf.id from centre_formation cf where cf.pays_id in (:paysIds)))"
+)
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class EvaluationPrevue implements Serializable {
 

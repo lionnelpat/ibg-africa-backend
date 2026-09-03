@@ -3,6 +3,7 @@
   "realm": "jhipster",
   "displayName": "JHipster",
   "displayNameHtml": "<div class=\"kc-logo-text\"><span>JHipster</span></div>",
+  "loginTheme": "ibgafrica",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -446,6 +447,34 @@
       ],
       "clientRoles": {},
       "subGroups": []
+    },
+    {
+      "id": "9ce0958a-d6a8-4a6f-a33b-50820afc5585",
+      "name": "pays",
+      "path": "/pays",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": [
+        {
+          "id": "9726ad5d-93b1-4f5c-82d3-598aeecf68d3",
+          "name": "SN",
+          "path": "/pays/SN",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        },
+        {
+          "id": "797a7ea7-c6a0-44bf-960e-90931bf0781a",
+          "name": "MG",
+          "path": "/pays/MG",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        }
+      ]
     }
   ],
   "defaultRole": {
@@ -1170,6 +1199,20 @@
             "access.token.claim": "true",
             "claim.name": "groups",
             "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "9c06a2ac-30a7-4c49-b3bd-bf9a811a6f48",
+          "name": "pays_groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "claim.name": "pays_groups"
           }
         },
         {

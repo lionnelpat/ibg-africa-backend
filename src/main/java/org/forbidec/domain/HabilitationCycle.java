@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import org.forbidec.domain.enumeration.RoleFonctionnel;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Périmètre fonctionnel d'un utilisateur. L'authentification reste dans
@@ -21,6 +22,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "habilitation_cycle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(
+    name = "paysFilter",
+    condition = "centre_id is null or centre_id in (select cf.id from centre_formation cf where cf.pays_id in (:paysIds))"
+)
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class HabilitationCycle implements Serializable {
 

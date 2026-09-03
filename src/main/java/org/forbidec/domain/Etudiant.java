@@ -10,6 +10,7 @@ import java.util.Set;
 import org.forbidec.domain.enumeration.Sexe;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Étudiant.
@@ -21,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "etudiant")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(name = "paysFilter", condition = "pays_id in (:paysIds)")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Etudiant implements Serializable {
 

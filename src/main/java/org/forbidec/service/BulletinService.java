@@ -18,6 +18,7 @@ import org.forbidec.repository.CycleRepository;
 import org.forbidec.repository.EtudiantRepository;
 import org.forbidec.repository.bulletin.BulletinQueryRepository;
 import org.forbidec.repository.bulletin.EvaluationLigneProjection;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.bulletin.BulletinDTO;
 import org.forbidec.service.dto.bulletin.BulletinLigneDTO;
 import org.forbidec.service.mention.Mention;
@@ -46,19 +47,22 @@ public class BulletinService {
     private final CycleRepository cycleRepository;
     private final BaremeMentionRepository baremeMentionRepository;
     private final MentionResolver mentionResolver;
+    private final PaysContextService paysContextService;
 
     public BulletinService(
         BulletinQueryRepository bulletinQueryRepository,
         EtudiantRepository etudiantRepository,
         CycleRepository cycleRepository,
         BaremeMentionRepository baremeMentionRepository,
-        MentionResolver mentionResolver
+        MentionResolver mentionResolver,
+        PaysContextService paysContextService
     ) {
         this.bulletinQueryRepository = bulletinQueryRepository;
         this.etudiantRepository = etudiantRepository;
         this.cycleRepository = cycleRepository;
         this.baremeMentionRepository = baremeMentionRepository;
         this.mentionResolver = mentionResolver;
+        this.paysContextService = paysContextService;
     }
 
     public BulletinDTO getBulletin(Long etudiantId) {
@@ -67,6 +71,7 @@ public class BulletinService {
         Etudiant etudiant = etudiantRepository
             .findById(etudiantId)
             .orElseThrow(() -> new BadRequestAlertException("Étudiant introuvable", "etudiant", "idnotfound"));
+        paysContextService.verifierAccesEtudiant(etudiant);
 
         List<EvaluationLigneProjection> rows = bulletinQueryRepository.findLignesForEtudiant(etudiantId);
 

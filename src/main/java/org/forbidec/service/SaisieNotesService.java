@@ -32,6 +32,7 @@ import org.forbidec.repository.HistoriqueNoteRepository;
 import org.forbidec.repository.bulletin.CycleDetailQueryRepository;
 import org.forbidec.repository.etudiant.EtudiantCycleCountQueryRepository;
 import org.forbidec.repository.saisie.SaisieQueryRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.security.SecurityUtils;
 import org.forbidec.service.dto.etudiant.EtudiantCycleCountDTO;
 import org.forbidec.service.dto.saisie.SaisieLigneDTO;
@@ -65,6 +66,7 @@ public class SaisieNotesService {
     private final SaisieQueryRepository saisieQueryRepository;
     private final EtudiantRepository etudiantRepository;
     private final EtudiantCycleCountQueryRepository etudiantCycleCountQueryRepository;
+    private final PaysContextService paysContextService;
 
     public SaisieNotesService(
         EvaluationPrevueRepository evaluationPrevueRepository,
@@ -73,7 +75,8 @@ public class SaisieNotesService {
         CycleDetailQueryRepository cycleDetailQueryRepository,
         SaisieQueryRepository saisieQueryRepository,
         EtudiantRepository etudiantRepository,
-        EtudiantCycleCountQueryRepository etudiantCycleCountQueryRepository
+        EtudiantCycleCountQueryRepository etudiantCycleCountQueryRepository,
+        PaysContextService paysContextService
     ) {
         this.evaluationPrevueRepository = evaluationPrevueRepository;
         this.evaluationRealiseeRepository = evaluationRealiseeRepository;
@@ -82,6 +85,7 @@ public class SaisieNotesService {
         this.saisieQueryRepository = saisieQueryRepository;
         this.etudiantRepository = etudiantRepository;
         this.etudiantCycleCountQueryRepository = etudiantCycleCountQueryRepository;
+        this.paysContextService = paysContextService;
     }
 
     private static String anneeLabel(Long nombreCycles) {
@@ -99,6 +103,7 @@ public class SaisieNotesService {
         EvaluationPrevue ep = evaluationPrevueRepository
             .findOneWithEagerRelationships(evaluationPrevueId)
             .orElseThrow(() -> new BadRequestAlertException("Matière planifiée introuvable", "evaluationPrevue", "idnotfound"));
+        paysContextService.verifierAccesEvaluationPrevue(ep);
 
         List<InscriptionCycle> inscriptions = cycleDetailQueryRepository.findInscriptionsForCycle(ep.getCycle().getId());
         Map<Long, EvaluationRealisee> existantes = new HashMap<>();
@@ -155,6 +160,7 @@ public class SaisieNotesService {
         EvaluationPrevue ep = evaluationPrevueRepository
             .findOneWithEagerRelationships(evaluationPrevueId)
             .orElseThrow(() -> new BadRequestAlertException("Matière planifiée introuvable", "evaluationPrevue", "idnotfound"));
+        paysContextService.verifierAccesEvaluationPrevue(ep);
 
         if (Boolean.TRUE.equals(ep.getCycle().getCloture())) {
             throw new BadRequestAlertException("Le cycle est clôturé : la saisie des notes n'est plus possible.", "evaluationPrevue", "cyclecloture");
@@ -314,6 +320,7 @@ public class SaisieNotesService {
         EvaluationPrevue ep = evaluationPrevueRepository
             .findOneWithEagerRelationships(evaluationPrevueId)
             .orElseThrow(() -> new BadRequestAlertException("Matière planifiée introuvable", "evaluationPrevue", "idnotfound"));
+        paysContextService.verifierAccesEvaluationPrevue(ep);
 
         List<InscriptionCycle> inscriptions = cycleDetailQueryRepository.findInscriptionsForCycle(ep.getCycle().getId());
 

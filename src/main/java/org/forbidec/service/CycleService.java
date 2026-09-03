@@ -3,6 +3,7 @@ package org.forbidec.service;
 import java.util.Optional;
 import org.forbidec.domain.Cycle;
 import org.forbidec.repository.CycleRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.CycleDTO;
 import org.forbidec.service.mapper.CycleMapper;
 import org.slf4j.Logger;
@@ -25,9 +26,12 @@ public class CycleService {
 
     private final CycleMapper cycleMapper;
 
-    public CycleService(CycleRepository cycleRepository, CycleMapper cycleMapper) {
+    private final PaysContextService paysContextService;
+
+    public CycleService(CycleRepository cycleRepository, CycleMapper cycleMapper, PaysContextService paysContextService) {
         this.cycleRepository = cycleRepository;
         this.cycleMapper = cycleMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -51,6 +55,7 @@ public class CycleService {
      */
     public CycleDTO update(CycleDTO cycleDTO) {
         LOG.debug("Request to update Cycle : {}", cycleDTO);
+        cycleRepository.findById(cycleDTO.getId()).ifPresent(paysContextService::verifierAccesCycle);
         Cycle cycle = cycleMapper.toEntity(cycleDTO);
         cycle = cycleRepository.save(cycle);
         return cycleMapper.toDto(cycle);
@@ -68,6 +73,7 @@ public class CycleService {
         return cycleRepository
             .findById(cycleDTO.getId())
             .map(existingCycle -> {
+                paysContextService.verifierAccesCycle(existingCycle);
                 cycleMapper.partialUpdate(existingCycle, cycleDTO);
 
                 return existingCycle;
@@ -94,7 +100,9 @@ public class CycleService {
     @Transactional(readOnly = true)
     public Optional<CycleDTO> findOne(Long id) {
         LOG.debug("Request to get Cycle : {}", id);
-        return cycleRepository.findOneWithEagerRelationships(id).map(cycleMapper::toDto);
+        Optional<Cycle> cycle = cycleRepository.findOneWithEagerRelationships(id);
+        cycle.ifPresent(paysContextService::verifierAccesCycle);
+        return cycle.map(cycleMapper::toDto);
     }
 
     /**
@@ -104,6 +112,7 @@ public class CycleService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete Cycle : {}", id);
+        cycleRepository.findById(id).ifPresent(paysContextService::verifierAccesCycle);
         cycleRepository.deleteById(id);
     }
 }

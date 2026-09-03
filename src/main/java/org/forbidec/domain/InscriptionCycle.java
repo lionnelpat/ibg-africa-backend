@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Inscription d'un étudiant à un cycle.
@@ -16,6 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "inscription_cycle")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(name = "paysFilter", condition = "etudiant_id in (select e.id from etudiant e where e.pays_id in (:paysIds))")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class InscriptionCycle implements Serializable {
 

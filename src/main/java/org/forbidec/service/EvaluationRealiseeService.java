@@ -3,6 +3,7 @@ package org.forbidec.service;
 import java.util.Optional;
 import org.forbidec.domain.EvaluationRealisee;
 import org.forbidec.repository.EvaluationRealiseeRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.dto.EvaluationRealiseeDTO;
 import org.forbidec.service.mapper.EvaluationRealiseeMapper;
 import org.slf4j.Logger;
@@ -25,12 +26,16 @@ public class EvaluationRealiseeService {
 
     private final EvaluationRealiseeMapper evaluationRealiseeMapper;
 
+    private final PaysContextService paysContextService;
+
     public EvaluationRealiseeService(
         EvaluationRealiseeRepository evaluationRealiseeRepository,
-        EvaluationRealiseeMapper evaluationRealiseeMapper
+        EvaluationRealiseeMapper evaluationRealiseeMapper,
+        PaysContextService paysContextService
     ) {
         this.evaluationRealiseeRepository = evaluationRealiseeRepository;
         this.evaluationRealiseeMapper = evaluationRealiseeMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -54,6 +59,7 @@ public class EvaluationRealiseeService {
      */
     public EvaluationRealiseeDTO update(EvaluationRealiseeDTO evaluationRealiseeDTO) {
         LOG.debug("Request to update EvaluationRealisee : {}", evaluationRealiseeDTO);
+        evaluationRealiseeRepository.findById(evaluationRealiseeDTO.getId()).ifPresent(paysContextService::verifierAccesEvaluationRealisee);
         EvaluationRealisee evaluationRealisee = evaluationRealiseeMapper.toEntity(evaluationRealiseeDTO);
         evaluationRealisee = evaluationRealiseeRepository.save(evaluationRealisee);
         return evaluationRealiseeMapper.toDto(evaluationRealisee);
@@ -71,6 +77,7 @@ public class EvaluationRealiseeService {
         return evaluationRealiseeRepository
             .findById(evaluationRealiseeDTO.getId())
             .map(existingEvaluationRealisee -> {
+                paysContextService.verifierAccesEvaluationRealisee(existingEvaluationRealisee);
                 evaluationRealiseeMapper.partialUpdate(existingEvaluationRealisee, evaluationRealiseeDTO);
 
                 return existingEvaluationRealisee;
@@ -97,7 +104,9 @@ public class EvaluationRealiseeService {
     @Transactional(readOnly = true)
     public Optional<EvaluationRealiseeDTO> findOne(Long id) {
         LOG.debug("Request to get EvaluationRealisee : {}", id);
-        return evaluationRealiseeRepository.findOneWithEagerRelationships(id).map(evaluationRealiseeMapper::toDto);
+        Optional<EvaluationRealisee> evaluationRealisee = evaluationRealiseeRepository.findOneWithEagerRelationships(id);
+        evaluationRealisee.ifPresent(paysContextService::verifierAccesEvaluationRealisee);
+        return evaluationRealisee.map(evaluationRealiseeMapper::toDto);
     }
 
     /**
@@ -107,6 +116,7 @@ public class EvaluationRealiseeService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete EvaluationRealisee : {}", id);
+        evaluationRealiseeRepository.findById(id).ifPresent(paysContextService::verifierAccesEvaluationRealisee);
         evaluationRealiseeRepository.deleteById(id);
     }
 }

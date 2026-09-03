@@ -33,9 +33,12 @@ public class BulletinPdfService {
     private final BulletinService bulletinService;
     private final BaremeMentionRepository baremeMentionRepository;
 
-    // Logos des partenaires (FES à gauche, IBG à droite) : fixes pour le
-    // centre de Dakar aujourd'hui. À rendre paramétrable par centre/pays
-    // le jour où un deuxième centre avec d'autres partenaires apparaît.
+    // Logos des partenaires : IBG à droite pour tous les centres, FES à
+    // gauche uniquement pour Dakar (partenariat propre à ce centre). À
+    // rendre paramétrable par centre en base le jour où d'autres centres
+    // ont eux aussi un partenaire local à afficher.
+    private static final String CODE_CENTRE_AVEC_FES = "CDDakar";
+
     private final String logoGaucheBase64 = chargerLogoBase64("logos/fes-logo.jpg");
     private final String logoDroitBase64 = chargerLogoBase64("logos/ibg-logo.png");
 
@@ -113,6 +116,10 @@ public class BulletinPdfService {
         String entete = esc(b.getCentreEnteteDocument()).replace("\n", "<br/>");
         String dateEdition = b.getDateEdition() != null ? DATE_FORMATTER.format(b.getDateEdition()) : "";
         String moyenneGenerale = formatMoyenne(b.getMoyenneGenerale());
+        boolean avecLogoFes = CODE_CENTRE_AVEC_FES.equals(b.getCentreCode());
+        String logoGauche = avecLogoFes
+            ? "<td class=\"logo\"><div class=\"logo-box\"><img src=\"data:image/jpeg;base64," + logoGaucheBase64 + "\"/></div></td>"
+            : "<td class=\"logo\"></td>";
 
         return (
             "<html><head><meta charset=\"UTF-8\"/><style>" +
@@ -141,9 +148,7 @@ public class BulletinPdfService {
             ".pied{font-size:0.7rem;}" +
             "</style></head><body>" +
             "<table class=\"masthead\"><tr>" +
-            "<td class=\"logo\"><div class=\"logo-box\"><img src=\"data:image/jpeg;base64," +
-            logoGaucheBase64 +
-            "\"/></div></td>" +
+            logoGauche +
             "<td class=\"entete\">" +
             entete +
             "</td>" +

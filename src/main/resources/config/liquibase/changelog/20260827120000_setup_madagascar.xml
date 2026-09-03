@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Préparation de l'arrivée de Madagascar (import à suivre séparément) :
+        1) fiabilise etudiant.pays_id pour les étudiants existants (Sénégal, seul
+           pays présent à ce stade), sans le rendre NOT NULL pour ne pas casser
+           la création d'étudiant tant que le frontend ne renseigne pas de pays ;
+        2) crée le pays Madagascar et son centre CDMADA (Antananarivo). Les
+           champs éditoriaux (entête, signataire) sont laissés à "À définir" /
+           vides, à compléter via Admin > Centres de formation une fois connus.
+    -->
+    <changeSet id="20260827120000-1" author="claude" context="!faker">
+        <sql>
+            UPDATE etudiant
+            SET pays_id = (SELECT id FROM pays LIMIT 1)
+            WHERE pays_id IS NULL
+              AND (SELECT COUNT(*) FROM pays) = 1;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20260827120000-2" author="claude" context="!faker">
+        <sql>
+            INSERT INTO pays (code_iso, nom, langue, fuseau, actif)
+            VALUES ('MG', 'Madagascar', 'fr', 'Indian/Antananarivo', true);
+
+            INSERT INTO centre_formation (code, nom, ville, signataire, nb_cycles_cursus, note_maximale, actif, pays_id)
+            VALUES ('CDMADA', 'Centre de Madagascar', 'ANTANANARIVO', 'A definir', 5, 20.00, true,
+                    (SELECT id FROM pays WHERE code_iso = 'MG'));
+        </sql>
+        <rollback>
+            DELETE FROM centre_formation WHERE code = 'CDMADA';
+            DELETE FROM pays WHERE code_iso = 'MG';
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

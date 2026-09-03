@@ -12,6 +12,7 @@ import java.util.Set;
 import org.forbidec.domain.enumeration.StatutNote;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Filter;
 
 /**
  * Note d'un étudiant sur une évaluation.
@@ -21,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "evaluation_realisee")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Filter(name = "paysFilter", condition = "etudiant_id in (select e.id from etudiant e where e.pays_id in (:paysIds))")
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class EvaluationRealisee implements Serializable {
 

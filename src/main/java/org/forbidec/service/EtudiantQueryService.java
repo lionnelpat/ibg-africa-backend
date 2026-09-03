@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.JoinType;
 import org.forbidec.domain.*; // for static metamodels
 import org.forbidec.domain.Etudiant;
 import org.forbidec.repository.EtudiantRepository;
+import org.forbidec.security.PaysContextService;
 import org.forbidec.service.criteria.EtudiantCriteria;
 import org.forbidec.service.dto.EtudiantDTO;
 import org.forbidec.service.mapper.EtudiantMapper;
@@ -32,9 +33,12 @@ public class EtudiantQueryService extends QueryService<Etudiant> {
 
     private final EtudiantMapper etudiantMapper;
 
-    public EtudiantQueryService(EtudiantRepository etudiantRepository, EtudiantMapper etudiantMapper) {
+    private final PaysContextService paysContextService;
+
+    public EtudiantQueryService(EtudiantRepository etudiantRepository, EtudiantMapper etudiantMapper, PaysContextService paysContextService) {
         this.etudiantRepository = etudiantRepository;
         this.etudiantMapper = etudiantMapper;
+        this.paysContextService = paysContextService;
     }
 
     /**
@@ -46,6 +50,7 @@ public class EtudiantQueryService extends QueryService<Etudiant> {
     @Transactional(readOnly = true)
     public Page<EtudiantDTO> findByCriteria(EtudiantCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<Etudiant> specification = createSpecification(criteria);
         return etudiantRepository.findAll(specification, page).map(etudiantMapper::toDto);
     }
@@ -58,6 +63,7 @@ public class EtudiantQueryService extends QueryService<Etudiant> {
     @Transactional(readOnly = true)
     public long countByCriteria(EtudiantCriteria criteria) {
         LOG.debug("count by criteria : {}", criteria);
+        paysContextService.enableFilterForCurrentRequest();
         final Specification<Etudiant> specification = createSpecification(criteria);
         return etudiantRepository.count(specification);
     }
