@@ -1,4 +1,4 @@
-name: ibgafrica
+name: ${COMPOSE_PROJECT_NAME:-ibgafrica}
 
 # Stack for Dokploy: mysql, adminer, keycloak, backend, frontend. The SAME
 # file is deployed twice on the same host — as the "main" branch project
@@ -18,8 +18,21 @@ name: ibgafrica
 #
 # Additional variables to set in Dokploy's staging project only (see
 # DEPLOY.md "Staging" section for the full list and recommended values) :
-#   REALM_CONFIG_DIR, KC_HOSTNAME_URL, OIDC_ISSUER_URI,
+#   COMPOSE_PROJECT_NAME, REALM_CONFIG_DIR, KC_HOSTNAME_URL, OIDC_ISSUER_URI,
 #   KEYCLOAK_HOST_PORT, BACKEND_HOST_PORT, ADMINER_HOST_PORT, FRONTEND_HOST_PORT
+#
+# COMPOSE_PROJECT_NAME in particular: without it, this file's top-level
+# "name:" resolves to the same literal "ibgafrica" for both the prod and
+# staging Dokploy projects. Docker Compose derives container/network
+# names AND the "com.docker.compose.project" label from this project
+# name — if Traefik's service discovery keys off that label (which is
+# how Dokploy's managed Traefik typically works), two stacks sharing it
+# can make Traefik route a domain to the wrong stack's container
+# (observed in practice: prod's login redirecting to staging's Keycloak,
+# with a redirect_uri error since prod's callback isn't a valid URI in
+# staging's realm). Giving staging its own project name removes the
+# ambiguity at the source instead of reactively stopping one stack
+# whenever the other needs to run.
 
 services:
   mysql:

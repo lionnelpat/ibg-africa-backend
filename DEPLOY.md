@@ -75,6 +75,16 @@ ports résolus, Keycloak et le backend annonceraient encore les URLs de
 **production** (`KC_HOSTNAME`, issuer OIDC, redirect URIs du realm), donc la
 connexion échouerait silencieusement sur le domaine de staging.
 
+**`COMPOSE_PROJECT_NAME` en particulier** est ce qui a causé l'incident où
+se connecter à la prod redirigeait vers le Keycloak de staging (erreur
+`redirect_uri`) : sans cette variable, les deux stacks partagent le même
+nom de projet Compose (`ibgafrica`), donc les mêmes labels
+`com.docker.compose.project` sur leurs conteneurs — et Traefik, qui
+découvre ses backends via ces labels, peut alors router un domaine de
+prod vers un conteneur de staging (ou l'inverse) selon lequel des deux a
+démarré en dernier. **Ne déployez plus staging sans avoir défini cette
+variable.**
+
 1. Nouveau projet Dokploy → **Docker Compose**, dépôt
    `ibg-africa-backend`, branche **`develop`**, fichier `docker-compose.yml`.
 2. Onglet **Environment** : les 3 variables habituelles, avec des valeurs
@@ -83,6 +93,7 @@ connexion échouerait silencieusement sur le domaine de staging.
 
    | Variable | Valeur recommandée | Rôle |
    |---|---|---|
+   | `COMPOSE_PROJECT_NAME` | `ibgafrica-staging` | **Important** : sans ça, cette stack partage le même nom de projet Compose que la prod (`ibgafrica`), ce qui peut faire router Traefik vers le mauvais conteneur selon lequel des deux a démarré en dernier (observé : connexion à la prod redirigée vers le Keycloak de staging, avec une erreur `redirect_uri`). Voir le commentaire en tête de `docker-compose.yml`. |
    | `MYSQL_ROOT_PASSWORD` | (propre à staging) | — |
    | `KEYCLOAK_ADMIN_PASSWORD` | (propre à staging) | — |
    | `CLIENT_SECRET_WEB_APP` | voir `secret` du client `web_app` dans `src/main/docker/realm-config-staging/jhipster-realm.json` | doit correspondre au realm importé |
