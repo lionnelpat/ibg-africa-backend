@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import org.forbidec.domain.BaremeMention;
 import org.forbidec.repository.BaremeMentionRepository;
 import org.forbidec.service.dto.bulletin.BulletinDTO;
@@ -33,18 +35,23 @@ public class BulletinPdfService {
     private final BulletinService bulletinService;
     private final BaremeMentionRepository baremeMentionRepository;
 
-    // Logos des partenaires : IBG à droite pour tous les centres, FES à
-    // gauche uniquement pour Dakar (partenariat propre à ce centre). À
-    // rendre paramétrable par centre en base le jour où d'autres centres
-    // ont eux aussi un partenaire local à afficher.
-    private static final String CODE_CENTRE_AVEC_FES = "CDDakar";
+    // Logos des partenaires : IBG à droite pour tous les centres, partenaire
+    // local à gauche selon le centre (FES pour Dakar, CEFOI pour Madagascar).
+    // À rendre paramétrable par centre en base si la liste grandit encore.
+    private static final Map<String, String> LOGO_GAUCHE_PAR_CENTRE = Map.of(
+        "CDDakar", "logos/fes-logo.jpg",
+        "CDMADA", "logos/cefoi-logo.jpg"
+    );
 
-    private final String logoGaucheBase64 = chargerLogoBase64("logos/fes-logo.jpg");
+    private final Map<String, String> logosGaucheBase64;
     private final String logoDroitBase64 = chargerLogoBase64("logos/ibg-logo.png");
 
     public BulletinPdfService(BulletinService bulletinService, BaremeMentionRepository baremeMentionRepository) {
         this.bulletinService = bulletinService;
         this.baremeMentionRepository = baremeMentionRepository;
+        Map<String, String> logos = new LinkedHashMap<>();
+        LOGO_GAUCHE_PAR_CENTRE.forEach((centre, classpathLocation) -> logos.put(centre, chargerLogoBase64(classpathLocation)));
+        this.logosGaucheBase64 = logos;
     }
 
     private static String chargerLogoBase64(String classpathLocation) {
@@ -116,8 +123,8 @@ public class BulletinPdfService {
         String entete = esc(b.getCentreEnteteDocument()).replace("\n", "<br/>");
         String dateEdition = b.getDateEdition() != null ? DATE_FORMATTER.format(b.getDateEdition()) : "";
         String moyenneGenerale = formatMoyenne(b.getMoyenneGenerale());
-        boolean avecLogoFes = CODE_CENTRE_AVEC_FES.equals(b.getCentreCode());
-        String logoGauche = avecLogoFes
+        String logoGaucheBase64 = logosGaucheBase64.get(b.getCentreCode());
+        String logoGauche = logoGaucheBase64 != null
             ? "<td class=\"logo\"><div class=\"logo-box\"><img src=\"data:image/jpeg;base64," + logoGaucheBase64 + "\"/></div></td>"
             : "<td class=\"logo\"></td>";
 
